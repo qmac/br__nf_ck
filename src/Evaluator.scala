@@ -1,4 +1,3 @@
-object BFEvaluator
-{
-	
+object BFEvaluator {
+
 }
