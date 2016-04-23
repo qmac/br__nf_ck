@@ -6,14 +6,10 @@ object BFParser extends JavaTokenParsers {
 
     override val whiteSpace = """([^(\s\\/_><+-.,\[\])]*)+""".r
 
-    def tab: Parser[Any] = "\t" ^^^ "[Tab]"
-    def space: Parser[Any] = " " ^^^ "[Space]"
-    def lf: Parser[Any] = "\n" ^^^ "[LF]"
-    def statement: Parser[Any] = tab | space | lf | giveaway
-    
+
     def giveaway: Parser[Any] = "\\"
     def takeaway: Parser[Any] = "/"
-    def changeover: Parser[Any] = "_"
+    def crossover: Parser[Any] = "_"
 
     def incrementByte: Parser[Any] = "+"
     def decrementByte: Parser[Any] = "-"
@@ -24,5 +20,53 @@ object BFParser extends JavaTokenParsers {
     def forward: Parser[Any] = "["
     def back: Parser[Any] = "]"
 
+
+    def tab: Parser[Any] = "\t"
+    def space: Parser[Any] = " "
+    def lf: Parser[Any] = "\n"
+    def statement: Parser[Any] = stack | math | heap | flow | io
+    
+
     def prog = rep(statement)
+    
+    
+    def stack    : Parser[Any] = push | duplicate | swap | discard
+    def math     : Parser[Any] = wsadd | wssub | wsmulti | wsdiv | wsmod
+    def heap     : Parser[Any] = heapstore | heapretrv
+    def flow     : Parser[Any] = marklabel | callsubrt | jump | jumpzero | jumpneg | endsubrt | end
+    def io       : Parser[Any] = outputchr | outputnum | readchar | readnum
+
+    def digit    : Parser[Any] =  (space | tab)
+    def number   : Parser[Any] =  rep(digit) ~ lf
+    def push     : Parser[Any] = space ~ space ~  number ~ lf         ^^^ "push"
+    def duplicate: Parser[Any] = space ~ lf ~ space                ^^^ "duplicate"
+    def swap     : Parser[Any] = space ~ lf ~ tab                  ^^^ "swap"
+    def discard  : Parser[Any] = space ~ lf ~ lf                   ^^^ "discard"
+    
+    def wsadd    : Parser[Any] = lf ~ space ~ space ~ space        ^^^ "wsadd"
+    def wssub    : Parser[Any] = lf ~ space ~ space ~ tab          ^^^ "wssub"
+    def wsmulti  : Parser[Any] = lf ~ space ~ space ~ lf           ^^^ "wsmulti"
+    def wsdiv    : Parser[Any] = lf ~ space ~ tab ~ space          ^^^ "wsdiv"
+    def wsmod    : Parser[Any] = lf ~ space ~ tab ~ tab            ^^^ "wsmod"
+    
+    def heapstore: Parser[Any] = tab ~ tab ~ space                 ^^^ "heapstore"
+    def heapretrv: Parser[Any] = tab ~ tab ~ tab                   ^^^ "heapretrv"
+    
+    def marklabel: Parser[Any] = lf ~ space ~ space ~ number ~ lf  ^^^ "mark"
+    def callsubrt: Parser[Any] = lf ~ space ~ tab ~ number ~ lf    ^^^ "call"
+    def jump     : Parser[Any] = lf ~ space ~ lf ~ number ~ lf     ^^^ "jump"
+    def jumpzero : Parser[Any] = lf ~ tab ~ space ~ number ~ lf    ^^^ "jumpzero"
+    def jumpneg  : Parser[Any] = lf ~ tab ~ tab ~ number ~ lf      ^^^ "jumpneg"
+    def endsubrt : Parser[Any] = lf ~ tab ~ lf                     ^^^ "endsubrt"
+    def end      : Parser[Any] = lf ~ lf ~ lf                      ^^^ "end"
+    
+    def outputchr: Parser[Any] = tab ~ lf ~ space ~ space          ^^^ "outchr"
+    def outputnum: Parser[Any] = tab ~ lf ~ space ~ tab            ^^^ "outnum"
+    def readchar : Parser[Any] = tab ~ lf ~ tab ~ space            ^^^ "readchr"
+    def readnum  : Parser[Any] = tab ~ lf ~ tab ~ tab              ^^^ "readnum"
+    
+    
+    
+    
+    
 }
