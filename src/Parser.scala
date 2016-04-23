@@ -6,12 +6,23 @@ object BFParser extends JavaTokenParsers {
 
     override val whiteSpace = """([^(\s\\/_><+-.,\[\])]*)+""".r
 
-    def tab: Parser[Any] = "\t"
-    def space: Parser[Any] = " "
-    def lf: Parser[Any] = "\n"
+    def tab: Parser[Any] = "\t" ^^^ "[Tab]"
+    def space: Parser[Any] = " " ^^^ "[Space]"
+    def lf: Parser[Any] = "\n" ^^^ "[LF]"
     def statement: Parser[Any] = tab | space | lf | giveaway
     
-    def giveaway : Parser[Any] = "\\"
+    def giveaway: Parser[Any] = "\\"
+    def takeaway: Parser[Any] = "/"
+    def changeover: Parser[Any] = "_"
+
+    def incrementByte: Parser[Any] = "+"
+    def decrementByte: Parser[Any] = "-"
+    def incrementPtr: Parser[Any] = ">"
+    def decrementPtr: Parser[Any] = "<"
+    def output: Parser[Any] = "+"
+    def input: Parser[Any] = "+"
+    def forward: Parser[Any] = "["
+    def back: Parser[Any] = "]"
 
     def prog = rep(statement)
 }
