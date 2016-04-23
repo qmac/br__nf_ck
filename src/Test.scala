@@ -3,7 +3,7 @@ import java.io.FileInputStream
  
 object BFTest {
   def main(args: Array[String]): Unit = {
-    val reader = new FileReader("test-source.txt")
-    println(BFParser.parseLine("\t \n"))
+    val reader = new FileReader("TestAdd1.ws")
+    println(BFParser.parseFile(reader))
   }
 }
