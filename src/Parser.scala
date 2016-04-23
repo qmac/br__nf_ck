@@ -19,8 +19,8 @@ object BFParser extends JavaTokenParsers {
     def decrementByte: Parser[Any] = "-"
     def incrementPtr: Parser[Any] = ">"
     def decrementPtr: Parser[Any] = "<"
-    def output: Parser[Any] = "+"
-    def input: Parser[Any] = "+"
+    def output: Parser[Any] = "."
+    def input: Parser[Any] = ","
     def forward: Parser[Any] = "["
     def back: Parser[Any] = "]"
 
