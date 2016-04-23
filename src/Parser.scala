@@ -4,8 +4,7 @@ object BFParser extends JavaTokenParsers {
 	def parseFile(in: java.io.Reader) = parseAll(prog, in).get
 	def parseLine(line: String) = parseAll(prog, line).get
 
-	def prog: Parser[List[Any]] = rep("")
-}
+
 
 	override val skipWhitespace = false
 
