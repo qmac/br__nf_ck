@@ -24,7 +24,7 @@ object BFParser extends JavaTokenParsers {
     def tab: Parser[Any] = "\t"
     def space: Parser[Any] = " "
     def lf: Parser[Any] = "\n"
-    def statement: Parser[Any] = stack | math | heap | flow | io | number
+    def statement: Parser[Any] = stack | math | heap | flow | io
     
 
     def prog = rep(statement)
