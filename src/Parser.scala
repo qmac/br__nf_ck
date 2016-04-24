@@ -24,7 +24,7 @@ object BFParser extends JavaTokenParsers {
     def tab: Parser[Any] = "\t"
     def space: Parser[Any] = " "
     def lf: Parser[Any] = "\n"
-    def statement: Parser[Any] = stack | math | heap | flow | io
+    def statement: Parser[Any] = stack | math | heap | flow | io | number
     
 
     def prog = rep(statement)
@@ -37,8 +37,8 @@ object BFParser extends JavaTokenParsers {
     def io       : Parser[Any] = outputchr | outputnum | readchar | readnum
 
     def digit    : Parser[Any] =  (space | tab)
-    def number   : Parser[Any] =  rep(digit) ~ lf
-    def push     : Parser[Any] = space ~ space ~  number ~ lf         ^^^ "push"
+    def number   : Parser[Any] =  (digit).* ~ lf                  ^^^ "number"
+    def push     : Parser[Any] = space ~ space ~  number           ^^^ "push"
     def duplicate: Parser[Any] = space ~ lf ~ space                ^^^ "duplicate"
     def swap     : Parser[Any] = space ~ lf ~ tab                  ^^^ "swap"
     def discard  : Parser[Any] = space ~ lf ~ lf                   ^^^ "discard"
