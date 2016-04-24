@@ -6,7 +6,6 @@ object BFParser extends JavaTokenParsers {
 
     override val whiteSpace = """([^(\s\\/_><+-.,\[\])]*)+""".r
 
-
     def giveaway: Parser[Any] = "\\"
     def takeaway: Parser[Any] = "/"
     def crossover: Parser[Any] = "_"
@@ -19,15 +18,18 @@ object BFParser extends JavaTokenParsers {
     def input: Parser[Any] = ","
     def forward: Parser[Any] = "["
     def back: Parser[Any] = "]"
-
+    def bfStatement: Parser[Any] = incrementByte | decrementByte | incrementPtr | decrementPtr | output | input | forward | back
 
     def tab: Parser[Any] = "\t"
     def space: Parser[Any] = " "
     def lf: Parser[Any] = "\n"
-    def statement: Parser[Any] = stack | math | heap | flow | io | number
+    def wsStatement: Parser[Any] = stack | math | heap | flow | io | number
     
-
-    def prog = rep(statement)
+    def wsBf = crossover ~ rep(wsStatement) ~ crossover ~ rep(bfStatement)
+    def bfWs = crossover ~ rep(bfStatement) ~ crossover ~ rep(wsStatement)
+    def prog = rep(bfStatement) ~ crossover ~ rep(wsStatement) ~ rep(bfWs) | 
+            rep(bfStatement) ~ rep(wsBf) | 
+            rep(bfStatement)
     
     
     def stack    : Parser[Any] = push | duplicate | swap | discard
@@ -64,9 +66,4 @@ object BFParser extends JavaTokenParsers {
     def outputnum: Parser[Any] = tab ~ lf ~ space ~ tab            ^^^ "outnum"
     def readchar : Parser[Any] = tab ~ lf ~ tab ~ space            ^^^ "readchr"
     def readnum  : Parser[Any] = tab ~ lf ~ tab ~ tab              ^^^ "readnum"
-    
-    
-    
-    
-    
 }
