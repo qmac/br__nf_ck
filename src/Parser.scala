@@ -23,7 +23,7 @@ object BFParser extends JavaTokenParsers {
     def tab: Parser[Any] = "\t"
     def space: Parser[Any] = " "
     def lf: Parser[Any] = "\n"
-    def wsStatement: Parser[Any] = stack | math | heap | flow | io | number
+    def wsStatement: Parser[Any] = stack | math | heap | flow | io
     
     def wsBf = crossover ~ rep(wsStatement) ~ crossover ~ rep(bfStatement)
     def bfWs = crossover ~ rep(bfStatement) ~ crossover ~ rep(wsStatement)
