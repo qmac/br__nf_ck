@@ -19,20 +19,20 @@ object BFEvaluator {
 
     def execute(command: Operation) : Unit = {
         command match {
-            case Push(n) => push(n)
-            case Duplicate() => duplicate
-            case Swap() => swap
-            case Discard() => discard
+            case WsPush(n) => push(n)
+            case WsDuplicate() => duplicate
+            case WsSwap() => swap
+            case WsDiscard() => discard
             case WsAdd() => add
             case WsSub() => subtract
             case WsMulti() => multiply
             case WsDiv() => divide
             case WsMod() => modulus
-            case OutChr() => outchr
-            case OutNum() => outnum
-            case ReadChr() => readchr
-            case ReadNum() => readnum
-            case End() => end
+            case WsOutChr() => outchr
+            case WsOutNum() => outnum
+            case WsReadChr() => readchr
+            case WsReadNum() => readnum
+            case WsEnd() => end
             
             case BfInc() => increment_ptr()
             case BfDec() => decrement_ptr()

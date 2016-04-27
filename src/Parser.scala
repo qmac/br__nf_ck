@@ -22,19 +22,19 @@ case class WsSub() extends Operation
 case class WsMulti() extends Operation
 case class WsDiv() extends Operation
 case class WsMod() extends Operation
-case class HeapStore() extends Operation
-case class HeapRetrv() extends Operation
-case class MarkLabel(n: Int) extends Operation
-case class CallSubrt(n: Int) extends Operation
-case class Jump(n: Int) extends Operation
-case class JumpZero(n: Int) extends Operation
-case class JumpNeg(n: Int) extends Operation
-case class EndSubrt() extends Operation
-case class End() extends Operation
-case class OutChr() extends Operation
-case class OutNum() extends Operation
-case class ReadChr() extends Operation
-case class ReadNum() extends Operation
+case class WsHeapStore() extends Operation
+case class WsHeapRetrv() extends Operation
+case class WsMarkLabel(n: Int) extends Operation
+case class WsCallSubrt(n: Int) extends Operation
+case class WsJump(n: Int) extends Operation
+case class WsJumpZero(n: Int) extends Operation
+case class WsJumpNeg(n: Int) extends Operation
+case class WsEndSubrt() extends Operation
+case class WsEnd() extends Operation
+case class WsOutChr() extends Operation
+case class WsOutNum() extends Operation
+case class WsReadChr() extends Operation
+case class WsReadNum() extends Operation
 
 object BFParser extends JavaTokenParsers {
     def binary2Decimal(binary: List[Char]) : Int = {
@@ -87,10 +87,10 @@ object BFParser extends JavaTokenParsers {
                                                                         case "\t" => '1'}
     def number   : Parser[List[Char]] = (digit).+ <~ lf
     
-    def push     : Parser[Operation] = space ~ space ~ number             ^^ {case a ~ b ~ n => Push(binary2Decimal(n))}
-    def duplicate: Parser[Operation] = space ~ lf ~ space                ^^^ Duplicate()
-    def swap     : Parser[Operation] = space ~ lf ~ tab                  ^^^ Swap()
-    def discard  : Parser[Operation] = space ~ lf ~ lf                   ^^^ Discard()
+    def push     : Parser[Operation] = space ~ space ~ number             ^^ {case a ~ b ~ n => WsPush(binary2Decimal(n))}
+    def duplicate: Parser[Operation] = space ~ lf ~ space                ^^^ WsDuplicate()
+    def swap     : Parser[Operation] = space ~ lf ~ tab                  ^^^ WsSwap()
+    def discard  : Parser[Operation] = space ~ lf ~ lf                   ^^^ WsDiscard()
     
     def wsadd    : Parser[Operation] = tab ~ space ~ space ~ space       ^^^ WsAdd()
     def wssub    : Parser[Operation] = tab ~ space ~ space ~ tab         ^^^ WsSub()
@@ -98,19 +98,19 @@ object BFParser extends JavaTokenParsers {
     def wsdiv    : Parser[Operation] = tab ~ space ~ tab ~ space         ^^^ WsDiv()
     def wsmod    : Parser[Operation] = tab ~ space ~ tab ~ tab           ^^^ WsMod()
 
-    def heapstore: Parser[Operation] = tab ~ tab ~ space                 ^^^ HeapStore()
-    def heapretrv: Parser[Operation] = tab ~ tab ~ tab                   ^^^ HeapRetrv()
+    def heapstore: Parser[Operation] = tab ~ tab ~ space                 ^^^ WsHeapStore()
+    def heapretrv: Parser[Operation] = tab ~ tab ~ tab                   ^^^ WsHeapRetrv()
     
-    def marklabel: Parser[Operation] = lf ~ space ~ space ~ number        ^^ {case a ~ b ~ c ~ n => MarkLabel(binary2Decimal(n))}
-    def callsubrt: Parser[Operation] = lf ~ space ~ tab ~ number          ^^ {case a ~ b ~ c ~ n => CallSubrt(binary2Decimal(n))}
-    def jump     : Parser[Operation] = lf ~ space ~ lf ~ number           ^^ {case a ~ b ~ c ~ n => Jump(binary2Decimal(n))}
-    def jumpzero : Parser[Operation] = lf ~ tab ~ space ~ number          ^^ {case a ~ b ~ c ~ n => JumpZero(binary2Decimal(n))}
-    def jumpneg  : Parser[Operation] = lf ~ tab ~ tab ~ number            ^^ {case a ~ b ~ c ~ n => JumpNeg(binary2Decimal(n))}
-    def endsubrt : Parser[Operation] = lf ~ tab ~ lf                     ^^^ EndSubrt()
-    def end      : Parser[Operation] = lf ~ lf ~ lf                      ^^^ End()
+    def marklabel: Parser[Operation] = lf ~ space ~ space ~ number        ^^ {case a ~ b ~ c ~ n => WsMarkLabel(binary2Decimal(n))}
+    def callsubrt: Parser[Operation] = lf ~ space ~ tab ~ number          ^^ {case a ~ b ~ c ~ n => WsCallSubrt(binary2Decimal(n))}
+    def jump     : Parser[Operation] = lf ~ space ~ lf ~ number           ^^ {case a ~ b ~ c ~ n => WsJump(binary2Decimal(n))}
+    def jumpzero : Parser[Operation] = lf ~ tab ~ space ~ number          ^^ {case a ~ b ~ c ~ n => WsJumpZero(binary2Decimal(n))}
+    def jumpneg  : Parser[Operation] = lf ~ tab ~ tab ~ number            ^^ {case a ~ b ~ c ~ n => WsJumpNeg(binary2Decimal(n))}
+    def endsubrt : Parser[Operation] = lf ~ tab ~ lf                     ^^^ WsEndSubrt()
+    def end      : Parser[Operation] = lf ~ lf ~ lf                      ^^^ WsEnd()
     
-    def outputchr: Parser[Operation] = tab ~ lf ~ space ~ space          ^^^ OutChr()
-    def outputnum: Parser[Operation] = tab ~ lf ~ space ~ tab            ^^^ OutNum()
-    def readchar : Parser[Operation] = tab ~ lf ~ tab ~ space            ^^^ ReadChr()
-    def readnum  : Parser[Operation] = tab ~ lf ~ tab ~ tab              ^^^ ReadNum()
+    def outputchr: Parser[Operation] = tab ~ lf ~ space ~ space          ^^^ WsOutChr()
+    def outputnum: Parser[Operation] = tab ~ lf ~ space ~ tab            ^^^ WsOutNum()
+    def readchar : Parser[Operation] = tab ~ lf ~ tab ~ space            ^^^ WsReadChr()
+    def readnum  : Parser[Operation] = tab ~ lf ~ tab ~ tab              ^^^ WsReadNum()
 }
