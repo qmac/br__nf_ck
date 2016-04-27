@@ -4,6 +4,26 @@ import scala.io.StdIn._
 object BFEvaluator {
     
     var bfmode = true
+    var pc = 0
+    var brackets = Stack[Int]()
+    var pairs : List[(Int, Int)] = List[(Int, Int)]()
+    
+    var brackmap : Map[Int,Int] = Map[Int,Int]()
+    
+    def wellform(idx: Int) : Unit = {
+        if (brackets.isEmpty)
+        {
+            pc = -1
+            System.out.println("Syntax error with mismatched []:")
+            System.exit(0)
+        }
+        else
+        {
+            var keep : Int = brackets.pop
+            pairs = (idx,keep)::pairs
+            pairs = (keep,idx)::pairs
+        }
+    }
     
     var stack = Stack[Int]()
     
@@ -12,11 +32,33 @@ object BFEvaluator {
     var ptr = 0
 
     def evaluate(operations: List[Operation]) : Unit = {
-        operations match {
-            case command :: remainingCommands =>
-                execute(command)
-                evaluate(remainingCommands)
-            case Nil => ;
+        
+        val len:Int = operations.length
+        
+        var i = 0
+        while( i < len)
+        {
+            operations(i) match {
+                case BfForward() => brackets.push(i)
+                case BfBack()    => wellform(i)
+                case default => ;
+            }
+            i += 1
+        }
+        
+
+        if(!brackets.isEmpty)
+        {
+            System.out.println("Syntax Error with mismatched []")
+            System.exit(0)
+        }
+        
+        brackmap = pairs.toMap
+  
+        while( pc >= 0 && pc < len)
+        {
+            execute(operations(pc))
+            pc += 1
         }
     }
 
@@ -42,22 +84,31 @@ object BFEvaluator {
             
             case Giveaway() => give
             case Takeaway() => take
-            case Crossover() => bfmode = !bfmode
+            case Crossover() => cross
             
-            case BfInc() => increment_ptr()
-            case BfDec() => decrement_ptr()
-            case BfAdd() => tape(ptr) = tape(ptr) + 1
-            case BfSub() => tape(ptr) = tape(ptr) - 1
-            case BfOut() => output(tape(ptr))
-            case BfIn() => tape(ptr) = readInt()
+            case BfInc() => increment_ptr
+            case BfDec() => decrement_ptr
+            case BfAdd() => increment_val
+            case BfSub() => decrement_val
+            case BfOut() => outcell
+            case BfIn() => incell
+            case BfForward() => fward
+            case BfBack() => bward
+            
             // TODO: Control Flow
 
         }
         
     }
 
-    def push(n: Int) = stack.push(n)
-    def duplicate = stack.push(stack.top)
+    def push(n: Int) = {
+        stack.push(n)
+    }
+    
+    def duplicate = {
+        stack.push(stack.top)
+    }
+    
     def swap = {
         val prevTop = stack.pop
         val prevNext = stack.pop
@@ -65,12 +116,15 @@ object BFEvaluator {
         stack.push(prevNext)
     }
     def discard = stack.pop
+    
     def add = stack.push(stack.pop+stack.pop)
+    
     def subtract = {
         val prevTop = stack.pop
         stack.push(stack.pop-prevTop)
     }
-    def multiply = stack.push(stack.pop*stack.pop)
+    def multiply =  stack.push(stack.pop*stack.pop)
+    
     def divide = {
         val prevTop = stack.pop
         stack.push(stack.pop/prevTop)
@@ -79,18 +133,21 @@ object BFEvaluator {
         val prevTop = stack.pop
         stack.push(stack.pop%prevTop)
     }
-    def outchr = print(stack.pop.toChar)
-    def outnum = print(stack.pop)
+    def outchr =  print(stack.pop.toChar)
+    
+    def outnum =  print(stack.pop)
+    
     def readchr = stack.push(readChar.toInt)
+    
     def readnum = stack.push(readInt)
-
-
+    
     def give = {
         if (bfmode)
             push(tape(ptr))
         else
             tape(ptr) = stack.pop
     }
+    
     def take = {
         if(bfmode)
             tape(ptr) = stack.pop
@@ -98,8 +155,10 @@ object BFEvaluator {
             push(tape(ptr))
     }
     
-    def output(num:Int) = print(num.toChar)
-    
+    def cross = {
+        bfmode = !bfmode
+    }
+
     def increment_ptr() = {
         if (ptr != tapesize - 1) {
             ptr = ptr + 1
@@ -116,5 +175,28 @@ object BFEvaluator {
             ptr = tapesize
     }
     
-    def end = stack.clear
+    def increment_val() = {
+        tape(ptr) = tape(ptr) + 1
+    }
+    
+    def decrement_val()= {
+        tape(ptr) = tape(ptr) - 1
+    }
+    
+    def outcell = print(tape(ptr).toChar)
+    def incell =  tape(ptr) = readInt()
+    def fward = {
+        if (tape(ptr) == 0)
+            pc = brackmap.getOrElse(pc,0)
+    }
+    
+    def bward = {
+        if (tape(ptr) != 0)
+            pc = brackmap.getOrElse(pc,0)
+    }
+    
+    def end = {
+        stack.clear
+        pc = -2
+    }
 }
