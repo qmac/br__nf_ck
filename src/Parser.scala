@@ -26,12 +26,12 @@ object BFParser extends JavaTokenParsers {
     def input: Parser[Any] = ","
     def forward: Parser[Any] = "["
     def back: Parser[Any] = "]"
-    def bfStatement: Parser[Any] = incrementByte | decrementByte | incrementPtr | decrementPtr | output | input | forward | back
+    def bfStatement: Parser[Any] = incrementByte | decrementByte | incrementPtr | decrementPtr | output | input | forward | back | giveaway | takeaway
 
     def tab: Parser[Any] = "\t"
     def space: Parser[Any] = " "
     def lf: Parser[Any] = "\n"
-    def wsStatement: Parser[Any] = stack | math | heap | flow | io
+    def wsStatement: Parser[Any] = stack | math | heap | flow | io | giveaway | takeaway
     
     def wsBf = crossover ~ rep(wsStatement) ~ crossover ~ rep(bfStatement)
     def bfWs = crossover ~ rep(bfStatement) ~ crossover ~ rep(wsStatement)
