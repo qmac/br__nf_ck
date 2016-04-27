@@ -4,28 +4,31 @@ import scala.io.StdIn._
 object BFEvaluator {
     var stack = Stack[Int]()
 
-    def evaluate(operations: Any) : Unit = {
+    def evaluate(operations: List[Operation]) : Unit = {
         operations match {
-            case command :: remainingCommands => execute(command)
+            case command :: remainingCommands => 
+                execute(command)
+                evaluate(remainingCommands)
             case Nil => ;
         }
     }
 
-    def execute(command: Any) : Unit = {
+    def execute(command: Operation) : Unit = {
         command match {
-            case "push" => push(10)
-            case "duplicate" => duplicate
-            case "swap" => swap
-            case "discard" => discard
-            case "wsadd" => add
-            case "wssub" => subtract
-            case "wsmulti" => multiply
-            case "wsdiv" => divide
-            case "wsmod" => modulus
-            case "outchr" => outchr
-            case "outnum" => outnum
-            case "readchr" => readchr
-            case "readnum" => readnum
+            case Push(n) => push(n)
+            case Duplicate() => duplicate
+            case Swap() => swap
+            case Discard() => discard
+            case Wsadd() => add
+            case Wssub() => subtract
+            case Wsmulti() => multiply
+            case Wsdiv() => divide
+            case Wsmod() => modulus
+            case Outchr() => outchr
+            case Outnum() => outnum
+            case Readchr() => readchr
+            case Readnum() => readnum
+            case End() => ;
         }
         
     }
