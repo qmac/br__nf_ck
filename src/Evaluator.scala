@@ -1,41 +1,81 @@
-import scala.collection.mutable
-import scala.io.StdIn.{readLine,readInt}
+import scala.collection.mutable.Stack
+import scala.io.StdIn._
 
-object Evaluator {
+object BFEvaluator {
+    var stack = Stack[Int]()
     
     val tapesize = 100
     var tape:Array[Int] = new Array[Int](tapesize)
-    
-    
-    
-    // Data Pointer
     var ptr = 0
-    
-    def eval(cmdlist:List[Any])
-    {
-        var actual : List[Any] = cmdlist
-        actual.foreach(exec(_))
+
+    def evaluate(operations: List[Operation]) : Unit = {
+        operations match {
+            case command :: remainingCommands =>
+                execute(command)
+                evaluate(remainingCommands)
+            case Nil => ;
+        }
+    }
+
+    def execute(command: Operation) : Unit = {
+        command match {
+            case Push(n) => push(n)
+            case Duplicate() => duplicate
+            case Swap() => swap
+            case Discard() => discard
+            case Wsadd() => add
+            case Wssub() => subtract
+            case Wsmulti() => multiply
+            case Wsdiv() => divide
+            case Wsmod() => modulus
+            case Outchr() => outchr
+            case Outnum() => outnum
+            case Readchr() => readchr
+            case Readnum() => readnum
+            case End() => ;
+            
+            case BfInc() => increment_ptr()
+            case BfDec() => decrement_ptr()
+            case BfAdd() => tape(ptr) = tape(ptr) + 1
+            case BfSub() => tape(ptr) = tape(ptr) - 1
+            case BfOut() => output(tape(ptr))
+            case BfIn() => tape(ptr) = readInt()
+            // TODO: Control Flow
+        }
         
-        
     }
-    
-    def exec(cmd:Any) = cmd match
-    {
-        case ">" => increment_ptr()
-        case "<" => decrement_ptr()
-        case "+" => tape(ptr) = tape(ptr) + 1
-        case "-" => tape(ptr) = tape(ptr) - 1
-        case "." => output(tape(ptr))
-        case "," => tape(ptr) = readInt()
-        case subprogram : List[Any] => eval(subprogram)
+
+    def push(n: Int) = stack.push(n)
+    def duplicate = stack.push(stack.top)
+    def swap = {
+        val prevTop = stack.pop
+        val prevNext = stack.pop
+        stack.push(prevTop)
+        stack.push(prevNext)
     }
-    
-    def output(num:Int)
-    {
-        print(num.toChar)
+    def discard = stack.pop
+    def add = stack.push(stack.pop+stack.pop)
+    def subtract = {
+        val prevTop = stack.pop
+        stack.push(stack.pop-prevTop)
     }
+    def multiply = stack.push(stack.pop*stack.pop)
+    def divide = {
+        val prevTop = stack.pop
+        stack.push(stack.pop/prevTop)
+    }
+    def modulus = {
+        val prevTop = stack.pop
+        stack.push(stack.pop%prevTop)
+    }
+    def outchr = print(stack.pop.toChar)
+    def outnum = print(stack.pop)
+    def readchr = stack.push(readChar.toInt)
+    def readnum = stack.push(readInt)
     
-    def increment_ptr() {
+    def output(num:Int) = print(num.toChar)
+    
+    def increment_ptr() = {
         if (ptr != tapesize - 1) {
             ptr = ptr + 1
         }
@@ -44,15 +84,12 @@ object Evaluator {
         }
     }
     
-    def decrement_ptr() {
-        if (ptr != 0)  {
+    def decrement_ptr() = {
+        if (ptr != 0)
             ptr = ptr - 1
-        }
-        else {
+        else
             ptr = tapesize
-        }
     }
     
     
 }
-
