@@ -2,6 +2,9 @@ import scala.collection.mutable.Stack
 import scala.io.StdIn._
 
 object BFEvaluator {
+    
+    var bfmode = true
+    
     var stack = Stack[Int]()
     
     val tapesize = 100
@@ -34,6 +37,12 @@ object BFEvaluator {
             case Readnum() => readnum
 
             case End() => end
+            
+            //TODO add no-ops for whitespace characters in bf
+            
+            case Giveaway() => give
+            case Takeaway() => take
+            case Crossover() => bfmode = !bfmode
             
             case BfInc() => increment_ptr()
             case BfDec() => decrement_ptr()
@@ -75,6 +84,19 @@ object BFEvaluator {
     def readchr = stack.push(readChar.toInt)
     def readnum = stack.push(readInt)
 
+
+    def give = {
+        if (bfmode)
+            push(tape(ptr))
+        else
+            tape(ptr) = stack.pop
+    }
+    def take = {
+        if(bfmode)
+            tape(ptr) = stack.pop
+        else
+            push(tape(ptr))
+    }
     
     def output(num:Int) = print(num.toChar)
     
