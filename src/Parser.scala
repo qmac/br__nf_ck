@@ -1,6 +1,30 @@
 import scala.util.parsing.combinator._
 import java.lang.Integer
 
+abstract class Operation
+case class Push() extends Operation
+case class Duplicate() extends Operation
+case class Swap() extends Operation
+case class Discard() extends Operation
+case class Wsadd() extends Operation
+case class Wssub() extends Operation
+case class Wsmulti() extends Operation
+case class Wsdiv() extends Operation
+case class Wsmod() extends Operation
+case class Heapstore() extends Operation
+case class Heapretrv() extends Operation
+case class Marklabel() extends Operation
+case class Callsubrt() extends Operation
+case class Jump() extends Operation
+case class Jumpzero() extends Operation
+case class Jumpneg() extends Operation
+case class Endsubrt() extends Operation
+case class End() extends Operation
+case class Outchr() extends Operation
+case class Outnum() extends Operation
+case class Readchr() extends Operation
+case class Readnum() extends Operation
+
 object BFParser extends JavaTokenParsers {
     def binary2Decimal(binary: List[Char]) : Int = {
         val sign : Int = if (binary.head == '0') 1 else -1
@@ -50,30 +74,29 @@ object BFParser extends JavaTokenParsers {
                                                                         case "\t" => '1'}
     def number   : Parser[List[Char]] = (digit).+ <~ lf
     
-    def push     : Parser[Any] = space ~ space ~ number             ^^ {case a ~ b ~ n => "push(" + binary2Decimal(n) + ")"}
-    def duplicate: Parser[Any] = space ~ lf ~ space                ^^^ "duplicate"
-    def swap     : Parser[Any] = space ~ lf ~ tab                  ^^^ "swap"
-    def discard  : Parser[Any] = space ~ lf ~ lf                   ^^^ "discard"
+    def push     : Parser[Any] = space ~ space ~ number             ^^ {case a ~ b ~ n => Push(binary2Decimal(n))}
+    def duplicate: Parser[Any] = space ~ lf ~ space                ^^^ Duplicate()
+    def swap     : Parser[Any] = space ~ lf ~ tab                  ^^^ Swap()
+    def discard  : Parser[Any] = space ~ lf ~ lf                   ^^^ Discard()
     
-    def wsadd    : Parser[Any] = lf ~ space ~ space ~ space        ^^^ "wsadd"
-    def wssub    : Parser[Any] = lf ~ space ~ space ~ tab          ^^^ "wssub"
-    def wsmulti  : Parser[Any] = lf ~ space ~ space ~ lf           ^^^ "wsmulti"
-    def wsdiv    : Parser[Any] = lf ~ space ~ tab ~ space          ^^^ "wsdiv"
-    def wsmod    : Parser[Any] = lf ~ space ~ tab ~ tab            ^^^ "wsmod"
+    def wsadd    : Parser[Any] = tab ~ space ~ space ~ space        ^^^ Wsadd()
+    def wssub    : Parser[Any] = tab ~ space ~ space ~ tab          ^^^ Wssub()
+    def wsmulti  : Parser[Any] = tab ~ space ~ space ~ lf           ^^^ Wsmulti()
+    def wsdiv    : Parser[Any] = tab ~ space ~ tab ~ space          ^^^ Wsdiv()
+    def wsmod    : Parser[Any] = tab ~ space ~ tab ~ tab            ^^^ Wsmod()
     
-    def heapstore: Parser[Any] = tab ~ tab ~ space                 ^^^ "heapstore"
-    def heapretrv: Parser[Any] = tab ~ tab ~ tab                   ^^^ "heapretrv"
+    def heapstore: Parser[Any] = tab ~ tab ~ space                 ^^^ Heapstore()
+    def heapretrv: Parser[Any] = tab ~ tab ~ tab                   ^^^ Heapretrv()
     
-    def marklabel: Parser[Any] = lf ~ space ~ space ~ number        ^^ {case a ~ b ~ c ~ n => "mark(" + binary2Decimal(n) + ")"}
-    def callsubrt: Parser[Any] = lf ~ space ~ tab ~ number          ^^ {case a ~ b ~ c ~ n => "call(" + binary2Decimal(n) + ")"}
-    def jump     : Parser[Any] = lf ~ space ~ lf ~ number           ^^ {case a ~ b ~ c ~ n => "jump(" + binary2Decimal(n) + ")"}
-    def jumpzero : Parser[Any] = lf ~ tab ~ space ~ number          ^^ {case a ~ b ~ c ~ n => "jumpzero(" + binary2Decimal(n) + ")"}
-    def jumpneg  : Parser[Any] = lf ~ tab ~ tab ~ number            ^^ {case a ~ b ~ c ~ n => "jumpneg(" + binary2Decimal(n) + ")"}
-    def endsubrt : Parser[Any] = lf ~ tab ~ lf                     ^^^ "endsubrt"
-    def end      : Parser[Any] = lf ~ lf ~ lf                      ^^^ "end"
+    def marklabel: Parser[Any] = lf ~ space ~ space ~ number        ^^ {case a ~ b ~ c ~ n => Mark(binary2Decimal(n))}
+    def callsubrt: Parser[Any] = lf ~ space ~ tab ~ number          ^^ {case a ~ b ~ c ~ n => Callsubrt(binary2Decimal(n))}
+    def jump     : Parser[Any] = lf ~ space ~ lf ~ number           ^^ {case a ~ b ~ c ~ n => Jump(binary2Decimal(n))}
+    def jumpzero : Parser[Any] = lf ~ tab ~ space ~ number          ^^ {case a ~ b ~ c ~ n => Jumpzero(binary2Decimal(n))}
+    def jumpneg  : Parser[Any] = lf ~ tab ~ tab ~ number            ^^ {case a ~ b ~ c ~ n => Jumpneg(binary2Decimal(n))}
+    def endsubrt : Parser[Any] = lf ~ tab ~ lf                     ^^^ Endsubrt()
+    def end      : Parser[Any] = lf ~ lf ~ lf                      ^^^ End()
     
-    def outputchr: Parser[Any] = tab ~ lf ~ space ~ space          ^^^ "outchr"
-    def outputnum: Parser[Any] = tab ~ lf ~ space ~ tab            ^^^ "outnum"
-    def readchar : Parser[Any] = tab ~ lf ~ tab ~ space            ^^^ "readchr"
-    def readnum  : Parser[Any] = tab ~ lf ~ tab ~ tab              ^^^ "readnum"
-}
+    def outputchr: Parser[Any] = tab ~ lf ~ space ~ space          ^^^ Outchr()
+    def outputnum: Parser[Any] = tab ~ lf ~ space ~ tab            ^^^ Outnum()
+    def readchar : Parser[Any] = tab ~ lf ~ tab ~ space            ^^^ Readchr()
+    def readnum  : Parser[Any] = tab ~ lf ~ tab ~ tab              ^^^ Readnum()

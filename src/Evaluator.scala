@@ -12,6 +12,21 @@ object BFEvaluator {
     }
 
     def execute(command: Any) : Unit = {
+        command match {
+            case "push" => push(10)
+            case "duplicate" => duplicate
+            case "swap" => swap
+            case "discard" => discard
+            case "wsadd" => add
+            case "wssub" => subtract
+            case "wsmulti" => multiply
+            case "wsdiv" => divide
+            case "wsmod" => modulus
+            case "outchr" => outchr
+            case "outnum" => outnum
+            case "readchr" => readchr
+            case "readnum" => readnum
+        }
         
     }
 
@@ -25,10 +40,19 @@ object BFEvaluator {
     }
     def discard = stack.pop
     def add = stack.push(stack.pop+stack.pop)
-    def subtract = stack.push(stack.pop+stack.pop)
-    def multiply = stack.push(stack.pop+stack.pop)
-    def divide = stack.push(stack.pop+stack.pop)
-    def modulus = stack.push(stack.pop+stack.pop)
+    def subtract = {
+        val prevTop = stack.pop
+        stack.push(stack.pop-prevTop)
+    }
+    def multiply = stack.push(stack.pop*stack.pop)
+    def divide = {
+        val prevTop = stack.pop
+        stack.push(stack.pop/prevTop)
+    }
+    def modulus = {
+        val prevTop = stack.pop
+        stack.push(stack.pop%prevTop)
+    }
     def outchr = print(stack.pop.toChar)
     def outnum = print(stack.pop)
     def readchr = stack.push(readChar.toInt)
