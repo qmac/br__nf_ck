@@ -3,10 +3,14 @@ import scala.io.StdIn._
 
 object BFEvaluator {
     var stack = Stack[Int]()
+    
+    val tapesize = 100
+    var tape:Array[Int] = new Array[Int](tapesize)
+    var ptr = 0
 
     def evaluate(operations: List[Operation]) : Unit = {
         operations match {
-            case command :: remainingCommands => 
+            case command :: remainingCommands =>
                 execute(command)
                 evaluate(remainingCommands)
             case Nil => ;
@@ -28,7 +32,17 @@ object BFEvaluator {
             case Outnum() => outnum
             case Readchr() => readchr
             case Readnum() => readnum
+
             case End() => end
+            
+            case BfInc() => increment_ptr()
+            case BfDec() => decrement_ptr()
+            case BfAdd() => tape(ptr) = tape(ptr) + 1
+            case BfSub() => tape(ptr) = tape(ptr) - 1
+            case BfOut() => output(tape(ptr))
+            case BfIn() => tape(ptr) = readInt()
+            // TODO: Control Flow
+
         }
         
     }
@@ -60,5 +74,25 @@ object BFEvaluator {
     def outnum = print(stack.pop)
     def readchr = stack.push(readChar.toInt)
     def readnum = stack.push(readInt)
+
+    
+    def output(num:Int) = print(num.toChar)
+    
+    def increment_ptr() = {
+        if (ptr != tapesize - 1) {
+            ptr = ptr + 1
+        }
+        else {
+            ptr = 0
+        }
+    }
+    
+    def decrement_ptr() = {
+        if (ptr != 0)
+            ptr = ptr - 1
+        else
+            ptr = tapesize
+    }
+    
     def end = stack.clear
 }
