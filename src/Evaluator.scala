@@ -28,7 +28,7 @@ object BFEvaluator {
             case Outnum() => outnum
             case Readchr() => readchr
             case Readnum() => readnum
-            case End() => ;
+            case End() => end
         }
         
     }
@@ -60,4 +60,5 @@ object BFEvaluator {
     def outnum = print(stack.pop)
     def readchr = stack.push(readChar.toInt)
     def readnum = stack.push(readInt)
+    def end = stack.clear
 }
