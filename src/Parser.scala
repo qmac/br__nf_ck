@@ -35,7 +35,7 @@ object BFParser extends JavaTokenParsers {
     
     def wsBf = crossover ~ rep(wsStatement) ~ crossover ~ rep(bfStatement)
     def bfWs = crossover ~ rep(bfStatement) ~ crossover ~ rep(wsStatement)
-    def prog = rep(bfStatement) ~ crossover ~ rep(wsStatement) ~ rep(bfWs) | 
+    def prog = rep(wsStatement) | rep(bfStatement) ~ crossover ~ rep(wsStatement) ~ rep(bfWs) | 
             rep(bfStatement) ~ rep(wsBf) | 
             rep(bfStatement)
     
