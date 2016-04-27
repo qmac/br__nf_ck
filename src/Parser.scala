@@ -2,7 +2,7 @@ import scala.util.parsing.combinator._
 import java.lang.Integer
 
 abstract class Operation
-case class Push() extends Operation
+case class Push(n: Int) extends Operation
 case class Duplicate() extends Operation
 case class Swap() extends Operation
 case class Discard() extends Operation
@@ -13,11 +13,11 @@ case class Wsdiv() extends Operation
 case class Wsmod() extends Operation
 case class Heapstore() extends Operation
 case class Heapretrv() extends Operation
-case class Marklabel() extends Operation
-case class Callsubrt() extends Operation
-case class Jump() extends Operation
-case class Jumpzero() extends Operation
-case class Jumpneg() extends Operation
+case class Marklabel(n: Int) extends Operation
+case class Callsubrt(n: Int) extends Operation
+case class Jump(n: Int) extends Operation
+case class Jumpzero(n: Int) extends Operation
+case class Jumpneg(n: Int) extends Operation
 case class Endsubrt() extends Operation
 case class End() extends Operation
 case class Outchr() extends Operation
@@ -88,7 +88,7 @@ object BFParser extends JavaTokenParsers {
     def heapstore: Parser[Any] = tab ~ tab ~ space                 ^^^ Heapstore()
     def heapretrv: Parser[Any] = tab ~ tab ~ tab                   ^^^ Heapretrv()
     
-    def marklabel: Parser[Any] = lf ~ space ~ space ~ number        ^^ {case a ~ b ~ c ~ n => Mark(binary2Decimal(n))}
+    def marklabel: Parser[Any] = lf ~ space ~ space ~ number        ^^ {case a ~ b ~ c ~ n => Marklabel(binary2Decimal(n))}
     def callsubrt: Parser[Any] = lf ~ space ~ tab ~ number          ^^ {case a ~ b ~ c ~ n => Callsubrt(binary2Decimal(n))}
     def jump     : Parser[Any] = lf ~ space ~ lf ~ number           ^^ {case a ~ b ~ c ~ n => Jump(binary2Decimal(n))}
     def jumpzero : Parser[Any] = lf ~ tab ~ space ~ number          ^^ {case a ~ b ~ c ~ n => Jumpzero(binary2Decimal(n))}
@@ -100,3 +100,4 @@ object BFParser extends JavaTokenParsers {
     def outputnum: Parser[Any] = tab ~ lf ~ space ~ tab            ^^^ Outnum()
     def readchar : Parser[Any] = tab ~ lf ~ tab ~ space            ^^^ Readchr()
     def readnum  : Parser[Any] = tab ~ lf ~ tab ~ tab              ^^^ Readnum()
+}
