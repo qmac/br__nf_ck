@@ -23,16 +23,15 @@ object BFEvaluator {
             case Duplicate() => duplicate
             case Swap() => swap
             case Discard() => discard
-            case Wsadd() => add
-            case Wssub() => subtract
-            case Wsmulti() => multiply
-            case Wsdiv() => divide
-            case Wsmod() => modulus
-            case Outchr() => outchr
-            case Outnum() => outnum
-            case Readchr() => readchr
-            case Readnum() => readnum
-
+            case WsAdd() => add
+            case WsSub() => subtract
+            case WsMulti() => multiply
+            case WsDiv() => divide
+            case WsMod() => modulus
+            case OutChr() => outchr
+            case OutNum() => outnum
+            case ReadChr() => readchr
+            case ReadNum() => readnum
             case End() => end
             
             case BfInc() => increment_ptr()
@@ -42,7 +41,6 @@ object BFEvaluator {
             case BfOut() => output(tape(ptr))
             case BfIn() => tape(ptr) = readInt()
             // TODO: Control Flow
-
         }
         
     }
