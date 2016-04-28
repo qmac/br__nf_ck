@@ -5,8 +5,7 @@ import java.io.FileInputStream
  
 object BFTest {
     def main(args: Array[String]): Unit = {
-
-        val reader = new FileReader("../../test/TestPrint1.bf")
+        val reader = new FileReader(args(0))
         val ast = BFParser.parseFile(reader)
         println(ast)
         BFEvaluator.evaluate(ast)

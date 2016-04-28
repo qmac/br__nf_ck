@@ -2,42 +2,40 @@ import scala.collection.mutable.Stack
 import scala.io.StdIn._
 
 object BFEvaluator {
-    
+    // Top level data
     var bfmode = true
     var pc = 0
+
+    // BF data
     var brackets = Stack[Int]()
     var pairs : List[(Int, Int)] = List[(Int, Int)]()
-    
     var brackmap : Map[Int,Int] = Map[Int,Int]()
+
+    val tapesize = 100
+    var tape:Array[Int] = new Array[Int](tapesize)
+    var ptr = 0
     
+    // WS data
+    var stack = Stack[Int]()
+
     def wellform(idx: Int) : Unit = {
-        if (brackets.isEmpty)
-        {
+        if (brackets.isEmpty) {
             pc = -1
             System.out.println("Syntax error with mismatched []:")
             System.exit(0)
         }
-        else
-        {
+        else {
             var keep : Int = brackets.pop
             pairs = (idx,keep)::pairs
             pairs = (keep,idx)::pairs
         }
     }
-    
-    var stack = Stack[Int]()
-    
-    val tapesize = 100
-    var tape:Array[Int] = new Array[Int](tapesize)
-    var ptr = 0
 
     def evaluate(operations: List[Operation]) : Unit = {
-        
-        val len:Int = operations.length
+        val len: Int = operations.length
         
         var i = 0
-        while( i < len)
-        {
+        while(i < len) {
             operations(i) match {
                 case BfForward() => brackets.push(i)
                 case BfBack()    => wellform(i)
@@ -47,16 +45,14 @@ object BFEvaluator {
         }
         
 
-        if(!brackets.isEmpty)
-        {
+        if(!brackets.isEmpty) {
             System.out.println("Syntax Error with mismatched []")
             System.exit(0)
         }
         
         brackmap = pairs.toMap
   
-        while( pc >= 0 && pc < len)
-        {
+        while( pc >= 0 && pc < len) {
             execute(operations(pc))
             pc += 1
         }
@@ -64,7 +60,6 @@ object BFEvaluator {
 
     def execute(command: Operation) : Unit = {
         command match {
-
             case WsPush(n) => push(n)
             case WsDuplicate() => duplicate
             case WsSwap() => swap
@@ -94,17 +89,15 @@ object BFEvaluator {
             case Takeaway() => take
             case Crossover() => cross
             
-            case BfInc() => increment_ptr
-            case BfDec() => decrement_ptr
-            case BfAdd() => increment_val
-            case BfSub() => decrement_val
+            case BfInc() => incrementPtr
+            case BfDec() => decrementPtr
+            case BfAdd() => incrementVal
+            case BfSub() => decrementVal
             case BfOut() => outcell
             case BfIn() => incell
             case BfForward() => fward
             case BfBack() => bward
-
         }
-        
     }
 
     def push(n: Int) = stack.push(n)
@@ -155,7 +148,7 @@ object BFEvaluator {
         bfmode = !bfmode
     }
 
-    def increment_ptr() = {
+    def incrementPtr() = {
         if (ptr != tapesize - 1) {
             ptr = ptr + 1
         }
@@ -164,18 +157,18 @@ object BFEvaluator {
         }
     }
     
-    def decrement_ptr() = {
+    def decrementPtr() = {
         if (ptr != 0)
             ptr = ptr - 1
         else
             ptr = tapesize
     }
     
-    def increment_val() = {
+    def incrementVal() = {
         tape(ptr) = tape(ptr) + 1
     }
     
-    def decrement_val()= {
+    def decrementVal()= {
         tape(ptr) = tape(ptr) - 1
     }
     
