@@ -36,6 +36,8 @@ case class Outnum() extends Operation
 case class Readchr() extends Operation
 case class Readnum() extends Operation
 
+
+
 object BFParser extends JavaTokenParsers {
     def binary2Decimal(binary: List[Char]) : Int = {
         val sign : Int = if (binary.head == '0') 1 else -1

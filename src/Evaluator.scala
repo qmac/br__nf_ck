@@ -77,6 +77,13 @@ object BFEvaluator {
             case Outnum() => outnum
             case Readchr() => readchr
             case Readnum() => readnum
+            
+            case Marklabel(n: Int) => //probably a no-op because done before execute
+            case Callsubrt(n: Int) => // change pc to val in jump table and push curr pc to call stack
+            case Jump(n: Int) =>      // change pc to val in jump table
+            case Jumpzero(n: Int) =>  // similair with check
+            case Jumpneg(n: Int) =>   // similair with check
+            case Endsubrt()      =>   // change pc to callstack.pop
 
             case End() => end
             
@@ -94,20 +101,12 @@ object BFEvaluator {
             case BfIn() => incell
             case BfForward() => fward
             case BfBack() => bward
-            
-            // TODO: Control Flow
-
         }
         
     }
 
-    def push(n: Int) = {
-        stack.push(n)
-    }
-    
-    def duplicate = {
-        stack.push(stack.top)
-    }
+    def push(n: Int) = stack.push(n)
+    def duplicate = stack.push(stack.top)
     
     def swap = {
         val prevTop = stack.pop
@@ -116,15 +115,12 @@ object BFEvaluator {
         stack.push(prevNext)
     }
     def discard = stack.pop
-    
     def add = stack.push(stack.pop+stack.pop)
-    
     def subtract = {
         val prevTop = stack.pop
         stack.push(stack.pop-prevTop)
     }
-    def multiply =  stack.push(stack.pop*stack.pop)
-    
+    def multiply = stack.push(stack.pop*stack.pop)
     def divide = {
         val prevTop = stack.pop
         stack.push(stack.pop/prevTop)
@@ -134,12 +130,10 @@ object BFEvaluator {
         stack.push(stack.pop%prevTop)
     }
     def outchr =  print(stack.pop.toChar)
-    
     def outnum =  print(stack.pop)
-    
     def readchr = stack.push(readChar.toInt)
-    
     def readnum = stack.push(readInt)
+    
     
     def give = {
         if (bfmode)
