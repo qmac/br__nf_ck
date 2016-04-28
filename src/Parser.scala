@@ -80,7 +80,7 @@ object BFParser extends JavaTokenParsers {
     //def wsBf: Parser[List[Operation]] = crossover ~ rep(wsStatement) ~ crossover ~ rep(bfStatement)
     //def bfWs: Parser[List[Operation]] = crossover ~ rep(bfStatement) ~ crossover ~ rep(wsStatement)
 
-    def prog: Parser[List[Operation]] = rep(wsStatement) | rep(bfStatement)
+    def prog: Parser[List[Operation]] = (wsStatement).+ | (bfStatement).+
     //def prog: Parser[List[List[Operation]]] = rep(wsStatement) | rep(bfStatement) ~ crossover ~ rep(wsStatement) ~ rep(bfWs) |
      //       rep(bfStatement) ~ rep(wsBf) |
       //      rep(bfStatement)
