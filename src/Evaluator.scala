@@ -17,6 +17,7 @@ object BFEvaluator {
     
     // WS data
     var stack = Stack[Int]()
+    var heap = Map[Int, Int]()
     var jumpTable = Map[Int, Int]()
     var callStack = Stack[Int]()
 
@@ -47,7 +48,6 @@ object BFEvaluator {
             i += 1
         }
         
-        println(jumpTable)
         if(!brackets.isEmpty) {
             System.out.println("Syntax Error with mismatched []")
             System.exit(0)
@@ -76,13 +76,14 @@ object BFEvaluator {
             case WsOutNum() => outnum
             case WsReadChr() => readchr
             case WsReadNum() => readnum
-            
             case WsMarkLabel(n: Int) => ;
             case WsCallSubrt(n: Int) => callSubrt(n)
             case WsJump(n: Int) => jump(n)
             case WsJumpZero(n: Int) => jumpZero(n)
             case WsJumpNeg(n: Int) => jumpNeg(n)
             case WsEndSubrt() => endSubrt
+            case WsHeapStore() => heapStore
+            case WsHeapRetrv() => heapRetrv
             case WsEnd() => end
             
             //TODO add no-ops for whitespace characters in bf
@@ -104,7 +105,6 @@ object BFEvaluator {
 
     def push(n: Int) = stack.push(n)
     def duplicate = stack.push(stack.top)
-    
     def swap = {
         val prevTop = stack.pop
         val prevNext = stack.pop
@@ -130,7 +130,6 @@ object BFEvaluator {
     def outnum =  print(stack.pop)
     def readchr = stack.push(readChar.toInt)
     def readnum = stack.push(readInt)
-    
     def jump(n: Int) = {
         pc = jumpTable.getOrElse(n, -1)
     }
@@ -147,7 +146,15 @@ object BFEvaluator {
     def endSubrt = {
         pc = callStack.pop
     }
-    
+    def heapStore = {
+        val data = stack.pop
+        heap = heap + {stack.pop -> data}
+    }
+    def heapRetrv = {
+        val address = stack.pop
+        stack.push(heap.getOrElse(address, -1))
+    }
+
     def give = {
         if (bfmode)
             push(tape(ptr))
