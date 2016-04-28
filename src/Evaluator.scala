@@ -8,15 +8,17 @@ object BFEvaluator {
 
     // BF data
     var brackets = Stack[Int]()
-    var pairs : List[(Int, Int)] = List[(Int, Int)]()
-    var brackmap : Map[Int,Int] = Map[Int,Int]()
+    var pairs = List[(Int, Int)]()
+    var brackmap = Map[Int,Int]()
 
     val tapesize = 100
-    var tape:Array[Int] = new Array[Int](tapesize)
+    var tape: Array[Int] = new Array[Int](tapesize)
     var ptr = 0
     
     // WS data
     var stack = Stack[Int]()
+    var jumpTable = Map[Int, Int]()
+    var callStack = Stack[Int]()
 
     def wellform(idx: Int) : Unit = {
         if (brackets.isEmpty) {
@@ -39,12 +41,13 @@ object BFEvaluator {
             operations(i) match {
                 case BfForward() => brackets.push(i)
                 case BfBack()    => wellform(i)
+                case WsMarkLabel(n) => jumpTable = jumpTable + (n -> i)
                 case default => ;
             }
             i += 1
         }
         
-
+        println(jumpTable)
         if(!brackets.isEmpty) {
             System.out.println("Syntax Error with mismatched []")
             System.exit(0)
@@ -74,13 +77,12 @@ object BFEvaluator {
             case WsReadChr() => readchr
             case WsReadNum() => readnum
             
-            case WsMarkLabel(n: Int) => //probably a no-op because done before execute
-            case WsCallSubrt(n: Int) => // change pc to val in jump table and push curr pc to call stack
-            case WsJump(n: Int) =>      // change pc to val in jump table
-            case WsJumpZero(n: Int) =>  // similair with check
-            case WsJumpNeg(n: Int) =>   // similair with check
-            case WsEndSubrt()      =>   // change pc to callstack.pop
-
+            case WsMarkLabel(n: Int) => ;
+            case WsCallSubrt(n: Int) => callSubrt(n)
+            case WsJump(n: Int) => jump(n)
+            case WsJumpZero(n: Int) => jumpZero(n)
+            case WsJumpNeg(n: Int) => jumpNeg(n)
+            case WsEndSubrt() => endSubrt
             case WsEnd() => end
             
             //TODO add no-ops for whitespace characters in bf
@@ -129,6 +131,22 @@ object BFEvaluator {
     def readchr = stack.push(readChar.toInt)
     def readnum = stack.push(readInt)
     
+    def jump(n: Int) = {
+        pc = jumpTable.getOrElse(n, -1)
+    }
+    def jumpZero(n: Int) = {
+        if(stack.pop == 0) jump(n)
+    }
+    def jumpNeg(n: Int) = {
+        if(stack.pop < 0) jump(n)
+    }
+    def callSubrt(n: Int) = {
+        callStack.push(pc)
+        jump(n)
+    }
+    def endSubrt = {
+        pc = callStack.pop
+    }
     
     def give = {
         if (bfmode)
