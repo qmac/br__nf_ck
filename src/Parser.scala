@@ -36,6 +36,8 @@ case class WsOutNum() extends Operation
 case class WsReadChr() extends Operation
 case class WsReadNum() extends Operation
 
+
+
 object BFParser extends JavaTokenParsers {
     def binary2Decimal(binary: List[Char]) : Int = {
         val sign : Int = if (binary.head == '0') 1 else -1
@@ -71,8 +73,8 @@ object BFParser extends JavaTokenParsers {
     //def wsBf: Parser[List[Operation]] = crossover ~ rep(wsStatement) ~ crossover ~ rep(bfStatement)
     //def bfWs: Parser[List[Operation]] = crossover ~ rep(bfStatement) ~ crossover ~ rep(wsStatement)
 
-    def prog: Parser[List[Operation]] = rep(wsStatement) | rep(bfStatement)
-    //def prog: Parser[List[List[Operation]]] = rep(wsStatement) | rep(bfStatement) ~ crossover ~ rep(wsStatement) ~ rep(bfWs) | 
+    def prog: Parser[List[Operation]] = rep(bfStatement) | rep(wsStatement)
+    //def prog: Parser[List[List[Operation]]] = rep(wsStatement) | rep(bfStatement) ~ crossover ~ rep(wsStatement) ~ rep(bfWs) |
      //       rep(bfStatement) ~ rep(wsBf) |
       //      rep(bfStatement)
     
@@ -83,7 +85,7 @@ object BFParser extends JavaTokenParsers {
     def flow     : Parser[Operation] = marklabel | callsubrt | jump | jumpzero | jumpneg | endsubrt | end
     def io       : Parser[Operation] = outputchr | outputnum | readchar | readnum
 
-    def digit    : Parser[Char] = (space | tab)                      ^^ {case " " => '0' 
+    def digit    : Parser[Char] = (space | tab)                      ^^ {case " " => '0'
                                                                         case "\t" => '1'}
     def number   : Parser[List[Char]] = (digit).+ <~ lf
     

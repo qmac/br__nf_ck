@@ -2,6 +2,29 @@ import scala.collection.mutable.Stack
 import scala.io.StdIn._
 
 object BFEvaluator {
+    
+    var bfmode = true
+    var pc = 0
+    var brackets = Stack[Int]()
+    var pairs : List[(Int, Int)] = List[(Int, Int)]()
+    
+    var brackmap : Map[Int,Int] = Map[Int,Int]()
+    
+    def wellform(idx: Int) : Unit = {
+        if (brackets.isEmpty)
+        {
+            pc = -1
+            System.out.println("Syntax error with mismatched []:")
+            System.exit(0)
+        }
+        else
+        {
+            var keep : Int = brackets.pop
+            pairs = (idx,keep)::pairs
+            pairs = (keep,idx)::pairs
+        }
+    }
+    
     var stack = Stack[Int]()
     
     val tapesize = 100
@@ -9,16 +32,39 @@ object BFEvaluator {
     var ptr = 0
 
     def evaluate(operations: List[Operation]) : Unit = {
-        operations match {
-            case command :: remainingCommands =>
-                execute(command)
-                evaluate(remainingCommands)
-            case Nil => ;
+        
+        val len:Int = operations.length
+        
+        var i = 0
+        while( i < len)
+        {
+            operations(i) match {
+                case BfForward() => brackets.push(i)
+                case BfBack()    => wellform(i)
+                case default => ;
+            }
+            i += 1
+        }
+        
+
+        if(!brackets.isEmpty)
+        {
+            System.out.println("Syntax Error with mismatched []")
+            System.exit(0)
+        }
+        
+        brackmap = pairs.toMap
+  
+        while( pc >= 0 && pc < len)
+        {
+            execute(operations(pc))
+            pc += 1
         }
     }
 
     def execute(command: Operation) : Unit = {
         command match {
+
             case WsPush(n) => push(n)
             case WsDuplicate() => duplicate
             case WsSwap() => swap
@@ -32,21 +78,38 @@ object BFEvaluator {
             case WsOutNum() => outnum
             case WsReadChr() => readchr
             case WsReadNum() => readnum
+            
+            case WsMarkLabel(n: Int) => //probably a no-op because done before execute
+            case WsCallSubrt(n: Int) => // change pc to val in jump table and push curr pc to call stack
+            case WsJump(n: Int) =>      // change pc to val in jump table
+            case WsJumpZero(n: Int) =>  // similair with check
+            case WsJumpNeg(n: Int) =>   // similair with check
+            case WsEndSubrt()      =>   // change pc to callstack.pop
+
             case WsEnd() => end
             
-            case BfInc() => increment_ptr()
-            case BfDec() => decrement_ptr()
-            case BfAdd() => tape(ptr) = tape(ptr) + 1
-            case BfSub() => tape(ptr) = tape(ptr) - 1
-            case BfOut() => output(tape(ptr))
-            case BfIn() => tape(ptr) = readInt()
-            // TODO: Control Flow
+            //TODO add no-ops for whitespace characters in bf
+            
+            case Giveaway() => give
+            case Takeaway() => take
+            case Crossover() => cross
+            
+            case BfInc() => increment_ptr
+            case BfDec() => decrement_ptr
+            case BfAdd() => increment_val
+            case BfSub() => decrement_val
+            case BfOut() => outcell
+            case BfIn() => incell
+            case BfForward() => fward
+            case BfBack() => bward
+
         }
         
     }
 
     def push(n: Int) = stack.push(n)
     def duplicate = stack.push(stack.top)
+    
     def swap = {
         val prevTop = stack.pop
         val prevNext = stack.pop
@@ -68,14 +131,30 @@ object BFEvaluator {
         val prevTop = stack.pop
         stack.push(stack.pop%prevTop)
     }
-    def outchr = print(stack.pop.toChar)
-    def outnum = print(stack.pop)
+    def outchr =  print(stack.pop.toChar)
+    def outnum =  print(stack.pop)
     def readchr = stack.push(readChar.toInt)
     def readnum = stack.push(readInt)
+    
+    
+    def give = {
+        if (bfmode)
+            push(tape(ptr))
+        else
+            tape(ptr) = stack.pop
+    }
+    
+    def take = {
+        if(bfmode)
+            tape(ptr) = stack.pop
+        else
+            push(tape(ptr))
+    }
+    
+    def cross = {
+        bfmode = !bfmode
+    }
 
-    
-    def output(num:Int) = print(num.toChar)
-    
     def increment_ptr() = {
         if (ptr != tapesize - 1) {
             ptr = ptr + 1
@@ -92,5 +171,28 @@ object BFEvaluator {
             ptr = tapesize
     }
     
-    def end = stack.clear
+    def increment_val() = {
+        tape(ptr) = tape(ptr) + 1
+    }
+    
+    def decrement_val()= {
+        tape(ptr) = tape(ptr) - 1
+    }
+    
+    def outcell = print(tape(ptr).toChar)
+    def incell =  tape(ptr) = readInt()
+    def fward = {
+        if (tape(ptr) == 0)
+            pc = brackmap.getOrElse(pc,0)
+    }
+    
+    def bward = {
+        if (tape(ptr) != 0)
+            pc = brackmap.getOrElse(pc,0)
+    }
+    
+    def end = {
+        stack.clear
+        pc = -2
+    }
 }
