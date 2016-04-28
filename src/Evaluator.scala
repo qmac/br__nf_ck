@@ -1,5 +1,5 @@
 import scala.collection.mutable.Stack
-import scala.io.StdIn._
+import scala.io.StdIn.{readInt,readChar}
 
 object BFEvaluator {
     // Top level data
@@ -128,8 +128,8 @@ object BFEvaluator {
     }
     def outchr =  print(stack.pop.toChar)
     def outnum =  print(stack.pop)
-    def readchr = stack.push(readChar.toInt)
-    def readnum = stack.push(readInt)
+    def readchr = heap = heap + (stack.pop -> readChar)
+    def readnum = heap = heap + {stack.pop -> readInt}
     def jump(n: String) = {
         pc = jumpTable.getOrElse(n, -1)
     }
