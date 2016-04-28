@@ -24,11 +24,11 @@ case class WsDiv() extends Operation
 case class WsMod() extends Operation
 case class WsHeapStore() extends Operation
 case class WsHeapRetrv() extends Operation
-case class WsMarkLabel(n: Int) extends Operation
-case class WsCallSubrt(n: Int) extends Operation
-case class WsJump(n: Int) extends Operation
-case class WsJumpZero(n: Int) extends Operation
-case class WsJumpNeg(n: Int) extends Operation
+case class WsMarkLabel(n: String) extends Operation
+case class WsCallSubrt(n: String) extends Operation
+case class WsJump(n: String) extends Operation
+case class WsJumpZero(n: String) extends Operation
+case class WsJumpNeg(n: String) extends Operation
 case class WsEndSubrt() extends Operation
 case class WsEnd() extends Operation
 case class WsOutChr() extends Operation
@@ -42,6 +42,15 @@ object BFParser extends JavaTokenParsers {
         val numberString : String = binary.tail.mkString
         
         return Integer.parseInt(numberString, 2) * sign
+    }
+    def binary2String(binary: List[Char]) : String = {
+        val chars = binary.grouped(8).toList
+
+        var string = List[Char]()
+        for(char <- chars) {
+            string = Integer.parseInt(char.mkString, 2).toChar :: string
+        }
+        return string.reverse.mkString
     }
 
     def parseFile(in: java.io.Reader) = parseAll(prog, in).get
@@ -101,11 +110,11 @@ object BFParser extends JavaTokenParsers {
     def heapstore: Parser[Operation] = tab ~ tab ~ space                 ^^^ WsHeapStore()
     def heapretrv: Parser[Operation] = tab ~ tab ~ tab                   ^^^ WsHeapRetrv()
     
-    def marklabel: Parser[Operation] = lf ~ space ~ space ~ number        ^^ {case a ~ b ~ c ~ n => WsMarkLabel(binary2Decimal(n))}
-    def callsubrt: Parser[Operation] = lf ~ space ~ tab ~ number          ^^ {case a ~ b ~ c ~ n => WsCallSubrt(binary2Decimal(n))}
-    def jump     : Parser[Operation] = lf ~ space ~ lf ~ number           ^^ {case a ~ b ~ c ~ n => WsJump(binary2Decimal(n))}
-    def jumpzero : Parser[Operation] = lf ~ tab ~ space ~ number          ^^ {case a ~ b ~ c ~ n => WsJumpZero(binary2Decimal(n))}
-    def jumpneg  : Parser[Operation] = lf ~ tab ~ tab ~ number            ^^ {case a ~ b ~ c ~ n => WsJumpNeg(binary2Decimal(n))}
+    def marklabel: Parser[Operation] = lf ~ space ~ space ~ number        ^^ {case a ~ b ~ c ~ n => WsMarkLabel(binary2String(n))}
+    def callsubrt: Parser[Operation] = lf ~ space ~ tab ~ number          ^^ {case a ~ b ~ c ~ n => WsCallSubrt(binary2String(n))}
+    def jump     : Parser[Operation] = lf ~ space ~ lf ~ number           ^^ {case a ~ b ~ c ~ n => WsJump(binary2String(n))}
+    def jumpzero : Parser[Operation] = lf ~ tab ~ space ~ number          ^^ {case a ~ b ~ c ~ n => WsJumpZero(binary2String(n))}
+    def jumpneg  : Parser[Operation] = lf ~ tab ~ tab ~ number            ^^ {case a ~ b ~ c ~ n => WsJumpNeg(binary2String(n))}
     def endsubrt : Parser[Operation] = lf ~ tab ~ lf                     ^^^ WsEndSubrt()
     def end      : Parser[Operation] = lf ~ lf ~ lf                      ^^^ WsEnd()
     

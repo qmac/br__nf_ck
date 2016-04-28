@@ -18,7 +18,7 @@ object BFEvaluator {
     // WS data
     var stack = Stack[Int]()
     var heap = Map[Int, Int]()
-    var jumpTable = Map[Int, Int]()
+    var jumpTable = Map[String, Int]()
     var callStack = Stack[Int]()
 
     def wellform(idx: Int) : Unit = {
@@ -76,11 +76,11 @@ object BFEvaluator {
             case WsOutNum() => outnum
             case WsReadChr() => readchr
             case WsReadNum() => readnum
-            case WsMarkLabel(n: Int) => ;
-            case WsCallSubrt(n: Int) => callSubrt(n)
-            case WsJump(n: Int) => jump(n)
-            case WsJumpZero(n: Int) => jumpZero(n)
-            case WsJumpNeg(n: Int) => jumpNeg(n)
+            case WsMarkLabel(n) => ;
+            case WsCallSubrt(n) => callSubrt(n)
+            case WsJump(n) => jump(n)
+            case WsJumpZero(n) => jumpZero(n)
+            case WsJumpNeg(n) => jumpNeg(n)
             case WsEndSubrt() => endSubrt
             case WsHeapStore() => heapStore
             case WsHeapRetrv() => heapRetrv
@@ -130,16 +130,16 @@ object BFEvaluator {
     def outnum =  print(stack.pop)
     def readchr = stack.push(readChar.toInt)
     def readnum = stack.push(readInt)
-    def jump(n: Int) = {
+    def jump(n: String) = {
         pc = jumpTable.getOrElse(n, -1)
     }
-    def jumpZero(n: Int) = {
+    def jumpZero(n: String) = {
         if(stack.pop == 0) jump(n)
     }
-    def jumpNeg(n: Int) = {
+    def jumpNeg(n: String) = {
         if(stack.pop < 0) jump(n)
     }
-    def callSubrt(n: Int) = {
+    def callSubrt(n: String) = {
         callStack.push(pc)
         jump(n)
     }
