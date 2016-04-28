@@ -64,28 +64,29 @@ object BFEvaluator {
 
     def execute(command: Operation) : Unit = {
         command match {
-            case Push(n) => push(n)
-            case Duplicate() => duplicate
-            case Swap() => swap
-            case Discard() => discard
-            case Wsadd() => add
-            case Wssub() => subtract
-            case Wsmulti() => multiply
-            case Wsdiv() => divide
-            case Wsmod() => modulus
-            case Outchr() => outchr
-            case Outnum() => outnum
-            case Readchr() => readchr
-            case Readnum() => readnum
-            
-            case Marklabel(n: Int) => //probably a no-op because done before execute
-            case Callsubrt(n: Int) => // change pc to val in jump table and push curr pc to call stack
-            case Jump(n: Int) =>      // change pc to val in jump table
-            case Jumpzero(n: Int) =>  // similair with check
-            case Jumpneg(n: Int) =>   // similair with check
-            case Endsubrt()      =>   // change pc to callstack.pop
 
-            case End() => end
+            case WsPush(n) => push(n)
+            case WsDuplicate() => duplicate
+            case WsSwap() => swap
+            case WsDiscard() => discard
+            case WsAdd() => add
+            case WsSub() => subtract
+            case WsMulti() => multiply
+            case WsDiv() => divide
+            case WsMod() => modulus
+            case WsOutChr() => outchr
+            case WsOutNum() => outnum
+            case WsReadChr() => readchr
+            case WsReadNum() => readnum
+            
+            case WsMarkLabel(n: Int) => //probably a no-op because done before execute
+            case WsCallSubrt(n: Int) => // change pc to val in jump table and push curr pc to call stack
+            case WsJump(n: Int) =>      // change pc to val in jump table
+            case WsJumpZero(n: Int) =>  // similair with check
+            case WsJumpNeg(n: Int) =>   // similair with check
+            case WsEndSubrt()      =>   // change pc to callstack.pop
+
+            case WsEnd() => end
             
             //TODO add no-ops for whitespace characters in bf
             
@@ -101,6 +102,7 @@ object BFEvaluator {
             case BfIn() => incell
             case BfForward() => fward
             case BfBack() => bward
+
         }
         
     }
