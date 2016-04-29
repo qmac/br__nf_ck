@@ -56,7 +56,7 @@ object BFParser extends JavaTokenParsers {
     def parseFile(in: java.io.Reader) = parseAll(prog, in).get
     def parseLine(line: String) = parseAll(prog, line).get
 
-    override val whiteSpace = """([^(\s\\/_><+-.,\[\])]*)+""".r
+    override val whiteSpace = """([^\s\\/_><+\-.,\[\]]+)+""".r
 
     def giveaway: Parser[Operation] = "\\"  ^^^ Giveaway()
     def takeaway: Parser[Operation] = "/"   ^^^ Takeaway()
