@@ -198,7 +198,7 @@ object BFEvaluator {
     }
     
     def outcell = print(tape(ptr).toChar)
-    def incell =  tape(ptr) = readInt()
+    def incell =  tape(ptr) = readChar
     def fward = {
         if (tape(ptr) == 0)
             pc = brackmap.getOrElse(pc,0)
