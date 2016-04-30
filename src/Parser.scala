@@ -35,6 +35,7 @@ case class WsOutChr() extends Operation
 case class WsOutNum() extends Operation
 case class WsReadChr() extends Operation
 case class WsReadNum() extends Operation
+case class BfNoOp() extends Operation
 
 object BFParser extends JavaTokenParsers {
     def binary2Decimal(binary: List[Char]) : Int = {
@@ -70,7 +71,9 @@ object BFParser extends JavaTokenParsers {
     def input: Parser[Operation] = ","         ^^^ BfIn()
     def forward: Parser[Operation] = "["       ^^^ BfForward()
     def back: Parser[Operation] = "]"          ^^^ BfBack()
-    def bfStatement: Parser[Operation] = incrementByte | decrementByte | incrementPtr | decrementPtr | output | input | forward | back | giveaway | takeaway
+    def bfStatement: Parser[Operation] = incrementByte | decrementByte | incrementPtr | decrementPtr | output | input | forward | back | giveaway | takeaway | bfnop
+    
+    def bfnop: Parser[Operation] = ("\t" | " " | "\n") ^^^ BfNoOp()
 
     def tab = "\t"
     def space = " "

@@ -11,7 +11,7 @@ object BFEvaluator {
     var pairs = List[(Int, Int)]()
     var brackmap = Map[Int,Int]()
 
-    val tapesize = 100
+    val tapesize = 10000
     var tape: Array[Int] = new Array[Int](tapesize)
     var ptr = 0
     
@@ -86,7 +86,7 @@ object BFEvaluator {
             case WsHeapRetrv() => heapRetrv
             case WsEnd() => end
             
-            //TODO add no-ops for whitespace characters in bf
+            case BfNoOp() => ;
             
             case Giveaway() => give
             case Takeaway() => take
@@ -198,7 +198,7 @@ object BFEvaluator {
     }
     
     def outcell = print(tape(ptr).toChar)
-    def incell =  tape(ptr) = readChar
+    def incell =  tape(ptr) = readInt
     def fward = {
         if (tape(ptr) == 0)
             pc = brackmap.getOrElse(pc,0)

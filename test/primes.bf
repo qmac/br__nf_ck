@@ -1,4 +1,4 @@
-Taken from github(dot)com/pablojorge/brainfuck/
+Taken from github(dot)compablojorgebrainfuck
 Outputs all primes up to user's input
 Input should be within what the BF implementation can take in one char
 
@@ -113,7 +113,7 @@ numd numu teid teiu
     -
   ]
   
-  +>>[<<[-]>>-]<<          
+  +>>[<<[-]>>-]<<
   >[-]<                  CLR div
   =====END DIVIDES====
 
@@ -155,7 +155,7 @@ numd numu teid teiu
     [>+>[-]<<-]         bool= ten==0
     >[<+>-]             ten = tmp
     >[<<++++++++++>>-]  if ten=0 ten=10
-    <<-                 dec ten     
+    <<-                 dec ten
     <-                  dec num
    ]
    +++++++++            num=9
@@ -175,7 +175,7 @@ numd numu teid teiu
     [>+>[-]<<-]           bool= ten==0
     >[<+>-]               ten = tmp
     >[<<++++++++++>>>+<-] if ten=0 ten=10  inc div
-    <<-                   dec ten     
+    <<-                   dec ten
     <-                    dec num
    ]
    >>>>[<<<<+>>>>-]<<<<   copy div to num

@@ -1,7 +1,7 @@
 [
  The 196-algorithm implemented in brainfuck by Mats Linander.
 
- This program reads a number in the form of a string of decimal digits 
+ This program reads a number in the form of a string of decimal digits
  terminated by a unix style newline (0x10) and tries to determine if the
  entered number is a lychrel number.
 
@@ -13,7 +13,7 @@
 
  This program will keep reversing and adding until a palindromic numbers is
  obtained or it runs out of memory. Given x bytes of memory, an approximately
- x/5 digits long number can be calculated. 
+ x5 digits long number can be calculated.
 
  Rows starting with a percent sign ('%') show what the memory is supposed
  to look like at that point of execution. The string ":::" means "...".
@@ -28,95 +28,95 @@
 
 ]
 
-// Request input; print the string "enter number: "
+ Request input; print the string "enter number: "
 ++++++++++[->++++++++++>+++++++++++>+++<<<]
 >+.>.++++++.<.>--.>++.<----.+++++++.-------
 -.<---.+++.[-]>+++++.++[--<+>]<.[-]>>.[-]<<
 <
 
-// Read a string of numbers and setup memory
-// Let 'A' denote the first number read; 'B' the second; 'Y' the second last
-// and 'Z' the last
-// Note that the string may be of any length so it is possible that A=Y
-// or Z=A and there can be any number of numbers between 'B' and 'Y'
+ Read a string of numbers and setup memory
+ Let 'A' denote the first number read; 'B' the second; 'Y' the second last
+ and 'Z' the last
+ Note that the string may be of any length so it is possible that A=Y
+ or Z=A and there can be any number of numbers between 'B' and 'Y'
 +>>->
 ,----------[-->++++++[-<------>]<[->+>+<<]<+>+>>>>>,----------]
 <<<<<<[<<<<<]>-
 % 1 0 0 0 A A 0 1 1 B B 0 1 1 ::: 0 1 1 Y Y 0 1 1 Z Z 0 0 0 :::
 
-// Main loop
-// Loop while cell (0) is 1
+ Main loop
+ Loop while cell (0) is 1
 <<<[
 
-// Move some numbers around
+ Move some numbers around
 >>>>>>>[<< [->>[>>>>>]<+<<<<[<<<<<]>>>]>>[>>>>>]<<[-<<<[<<<<<]>>>+>>[>>>>>]<<]
  >[-<+>]<<<<-<<<<<[<<<<<]>>>>>[-]>>>>>]
 % 1 0 0 0 A Z 0 0 1 B Y 0 0 1 ::: 0 0 1 Y B 0 0 1 Z A 0 0 0 :::
 
-// Set some flags
+ Set some flags
 <<<<[<<<<<]<<+>>>>>>>[<+>>>>>>]
 % 1 1 0 0 A Z 0 1 1 B Y 0 1 1 ::: 0 1 1 Y B 0 1 1 Z A 0 0 0 :::
 
-// for all pairs (AZ and BY etc) if they are not equal (A!=Z or B!=Y etc) clear
-// flag in cell (1)
+ for all pairs (AZ and BY etc) if they are not equal (A!=Z or B!=Y etc) clear
+ flag in cell (1)
 <+[-<<
 [->+>+<<]<[->+>-<<]>[-<+>]>>[-<<+>>]<[[-]<<<[<<<<<]<<[-]>>>>>>[>>>>>]<]
 <<<<]
-% 1 0/1 0 0 A Z 0 0 1 B Y 0 0 1 ::: 0 0 1 Y B 0 0 1 Z A 0 0 0 :::
+% 1 01 0 0 A Z 0 0 1 B Y 0 0 1 ::: 0 0 1 Y B 0 0 1 Z A 0 0 0 :::
 
-// The flag in cell (1) is set if and only if the number is palindromic
-// If it is we clear the flag in cell (0) and the main loop will end
+ The flag in cell (1) is set if and only if the number is palindromic
+ If it is we clear the flag in cell (0) and the main loop will end
 <[-<->]<
-% 1/0 0 0 0 A Z 0 0 1 B Y 0 0 1 ::: 0 0 1 Y B 0 0 1 Z A 0 0 0 :::
+% 10 0 0 0 A Z 0 0 1 B Y 0 0 1 ::: 0 0 1 Y B 0 0 1 Z A 0 0 0 :::
 
-// If number is not palindromic we will do some addition
+ If number is not palindromic we will do some addition
 [
 
-// First output some information on where we are
-// Print the string "AB:::YZ (plus) ZY:::BA = "
+ First output some information on where we are
+ Print the string "AB:::YZ (plus) ZY:::BA = "
 >>>>>>>>[<<++++++++[-<++++++>]<.>>>>>>>>]++++++++[-<+++++<++++<++++++>>>]<<<.>
 .>+++.<.<.>>+++++[-<<->>]<[-]<<<[<<<.>++++++++[-<------>]<<<]++++++++++
 [-<+++<++++++>>]<++.<+.[-]>.[-]
 
-// Go through all pairs (including the last one)
-// Let 'G' and 'H' represent the pair of numbers we are currently working
-// with in the loop below
+ Go through all pairs (including the last one)
+ Let 'G' and 'H' represent the pair of numbers we are currently working
+ with in the loop below
 >>>>>>[>>>>>]+[<<<<<]>>>>>[
 % ::: G H 0 0 1 :::
 
-// Add them and check if the sum is larger than 9
+ Add them and check if the sum is larger than 9
 <<<[-<+>]
 >+<<[>>-<<[->+<]]>[-<+>]>[>>-<<-]<+++++++++
 [>>+<<-<-[>>>-<<<[->>+<<]]>>[-<<+>>]>[->[-]<]<<]
-% ::: G(plus)H(minus)9 0 0 0 1/0 :::
+% ::: G(plus)H(minus)9 0 0 0 10 :::
 
-// The rightmost cell in the list above is 1 iff the sum was larger than 9
-// If it was we add 1 to the next pair of numbers
-// If it was not we restore the sum
+ The rightmost cell in the list above is 1 iff the sum was larger than 9
+ If it was we add 1 to the next pair of numbers
+ If it was not we restore the sum
 <->>>+>[-<->>+<]+<[-<<<++++++++++>>>]
 % ::: G(plus)H 0 0 0 1 :::
-// Do the next pair
+ Do the next pair
 >>>>>>]
 
-// After adding we prepare the sum for next iteration in the main loop
-// and print the sum followed by newline
+ After adding we prepare the sum for next iteration in the main loop
+ and print the sum followed by newline
 <<<<<[-]>[-<+>>+<]>[-<+>]<<<<<<<[<<<<<]>>>>>[>>>>>]<<<<<
 [>[->+>+>+<<<]>>[-<<+>>]++++++++[->++++++<]>.[-]<<<<<<<<<]
 >[->+>+>+<<<]>>[-<<+>>]++++++++[->++++++<]>.[-]
 >[>>>>>]<<<<<[<+<<<<]<<<
 +++++++++.---------
 % 1 0 0 0 Z' Z' 0 1 1 Y' Y' 0 1 1 ::: 0 1 1 B' B' 0 1 1 A' A' 0 0 0 :::
-// Where the A'B' ::: Y'Z' = AB ::: YZ (plus) ZY ::: BA
+ Where the A'B' ::: Y'Z' = AB ::: YZ (plus) ZY ::: BA
 
-// Go back to the main loop
+ Go back to the main loop
 >+<-]
 >[-<+>]<
 
 ]
 
-// We've got a palindrome and have left the main loop
-// Print "Palindrome: A'B':::Y'Z'"
-% 1/0 0 0 0 A Z 0 0 1 B Y 0 0 1 ::: 0 0 1 Y B 0 0 1 Z A 0 0 0 :::
+ We've got a palindrome and have left the main loop
+ Print "Palindrome: A'B':::Y'Z'"
+% 10 0 0 0 A Z 0 0 1 B Y 0 0 1 ::: 0 0 1 Y B 0 0 1 Z A 0 0 0 :::
 ++++++++++[->++++++++>+++++++++++>++++++<<<]>.
 <++++[->++++<]>+.>--.---.+++++.<+++.>++++.---.
 --.<+.>>--.++[--<<<+>>>]<<<++.>>>+[>>>++++++++

@@ -7,7 +7,7 @@ object BFTest {
     def main(args: Array[String]): Unit = {
         val reader = new FileReader(args(0))
         val ast = BFParser.parseFile(reader)
-        println(ast)
+        // println(ast)
         BFEvaluator.evaluate(ast)
 
         // println(BFParser.parseLine("   \t\n"))
