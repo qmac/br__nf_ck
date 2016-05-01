@@ -55,9 +55,6 @@ object BFParser extends JavaTokenParsers {
         return string.reverse.mkString
     }
 
-    def parseFile(in: java.io.Reader) = parseAll(prog, in).get
-    def parseLine(line: String) = parseAll(prog, line).get
-
     override val whiteSpace = """([^\s\\/_><+\-.,`\[\]]+)+""".r
 
     def giveaway: Parser[Operation] = "\\"  ^^^ Giveaway()
@@ -82,22 +79,22 @@ object BFParser extends JavaTokenParsers {
     def lf = "\n"
     def wsStatement: Parser[Operation] = stack | math | heap | flow | io | giveaway | takeaway
 
-    def one: Parser[List[Operation]] = (bfStatement).+
-    def two: Parser[List[Operation]] = (bfStatement).+ ~ crossover                                              ^^ {case a ~ b => a:+b}
-    def three: Parser[List[Operation]] = (bfStatement).+ ~ crossover ~ (wsStatement).+                          ^^ {case a ~ b ~ c => (a:+b):::c}
-    def four: Parser[List[Operation]] = (bfStatement).+ ~ crossover ~ crossover                                 ^^ {case a ~ b ~ c => (a:+b):+c}
-    def five: Parser[List[Operation]] = (bfStatement).+ ~ crossover ~ crossover ~ prog                          ^^ {case a ~ b ~ c ~ d => (a:+b):::(c::d)}
-    def six: Parser[List[Operation]] = (bfStatement).+ ~ crossover ~ (wsStatement).+ ~ crossover                ^^ {case a ~ b ~ c ~ d => (a:+b):::(c:+d)}
-    def seven: Parser[List[Operation]] = (bfStatement).+ ~ crossover ~ (wsStatement).+ ~ crossover ~ prog       ^^ {case a ~ b ~ c ~ d ~ e => (a:+b):::(c:+d):::e}
+    def bf: Parser[List[Operation]] = (bfStatement).+
+    def bfx: Parser[List[Operation]] = (bfStatement).+ ~ crossover                                              ^^ {case a ~ b => a:+b}
+    def bfxws: Parser[List[Operation]] = (bfStatement).+ ~ crossover ~ (wsStatement).+                          ^^ {case a ~ b ~ c => (a:+b):::c}
+    def bfxx: Parser[List[Operation]] = (bfStatement).+ ~ crossover ~ crossover                                 ^^ {case a ~ b ~ c => (a:+b):+c}
+    def bfxxprog: Parser[List[Operation]] = (bfStatement).+ ~ crossover ~ crossover ~ prog                      ^^ {case a ~ b ~ c ~ d => (a:+b):::(c::d)}
+    def bfxwsx: Parser[List[Operation]] = (bfStatement).+ ~ crossover ~ (wsStatement).+ ~ crossover             ^^ {case a ~ b ~ c ~ d => (a:+b):::(c:+d)}
+    def bfxwsxprog: Parser[List[Operation]] = (bfStatement).+ ~ crossover ~ (wsStatement).+ ~ crossover ~ prog  ^^ {case a ~ b ~ c ~ d ~ e => (a:+b):::(c:+d):::e}
 
-    def eight: Parser[List[Operation]] = crossover                                                              ^^ {case a => List(a)}
-    def nine: Parser[List[Operation]] = crossover ~ crossover                                                   ^^ {case a ~ b => List(a, b)}
-    def ten: Parser[List[Operation]] = crossover ~ crossover ~ prog                                             ^^ {case a ~ b ~ c => a::(b::c)}
-    def eleven: Parser[List[Operation]] = crossover ~ (wsStatement).+                                           ^^ {case a ~ b => a::b}
-    def twelve: Parser[List[Operation]] = crossover ~ (wsStatement).+ ~ crossover                               ^^ {case a ~ b ~ c => (a::b):+c}
-    def thirteen: Parser[List[Operation]] = crossover ~ (wsStatement).+ ~ crossover ~ prog                      ^^ {case a ~ b ~ c ~ d => (a::b):::(c::d)}
+    def x: Parser[List[Operation]] = crossover                                                                  ^^ {case a => List(a)}
+    def xx: Parser[List[Operation]] = crossover ~ crossover                                                     ^^ {case a ~ b => List(a, b)}
+    def xxprog: Parser[List[Operation]] = crossover ~ crossover ~ prog                                          ^^ {case a ~ b ~ c => a::(b::c)}
+    def xws: Parser[List[Operation]] = crossover ~ (wsStatement).+                                              ^^ {case a ~ b => a::b}
+    def xwsx: Parser[List[Operation]] = crossover ~ (wsStatement).+ ~ crossover                                 ^^ {case a ~ b ~ c => (a::b):+c}
+    def xwsxprog: Parser[List[Operation]] = crossover ~ (wsStatement).+ ~ crossover ~ prog                      ^^ {case a ~ b ~ c ~ d => (a::b):::(c::d)}
 
-    def prog: Parser[List[Operation]] = thirteen | seven | five | ten | twelve | six | four | three | eleven | nine | two | eight | one
+    def prog: Parser[List[Operation]] = xwsxprog | bfxwsxprog | bfxxprog | xxprog | xwsx | bfxwsx | bfxx | bfxws | xws | xx | bfx | x | bf
 
     def empty = "" ^^^ BfNoOp()
     
