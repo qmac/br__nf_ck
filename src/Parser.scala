@@ -76,15 +76,25 @@ object BFParser extends JavaTokenParsers {
     def space = " "
     def lf = "\n"
     def wsStatement: Parser[Operation] = stack | math | heap | flow | io | giveaway | takeaway
-    
-    //def wsBf: Parser[List[Operation]] = crossover ~ rep(wsStatement) ~ crossover ~ rep(bfStatement)
-    //def bfWs: Parser[List[Operation]] = crossover ~ rep(bfStatement) ~ crossover ~ rep(wsStatement)
 
-    def prog: Parser[List[Operation]] = (wsStatement).+ | (bfStatement).+
-    //def prog: Parser[List[List[Operation]]] = rep(wsStatement) | rep(bfStatement) ~ crossover ~ rep(wsStatement) ~ rep(bfWs) |
-     //       rep(bfStatement) ~ rep(wsBf) |
-      //      rep(bfStatement)
-    
+    def one: Parser[List[Operation]] = (bfStatement).+
+    def two: Parser[List[Operation]] = (bfStatement).+ ~ crossover                                              ^^ {case a ~ b => a:+b}
+    def three: Parser[List[Operation]] = (bfStatement).+ ~ crossover ~ (wsStatement).+                          ^^ {case a ~ b ~ c => (a:+b):::c}
+    def four: Parser[List[Operation]] = (bfStatement).+ ~ crossover ~ crossover                                 ^^ {case a ~ b ~ c => (a:+b):+c}
+    def five: Parser[List[Operation]] = (bfStatement).+ ~ crossover ~ crossover ~ prog                          ^^ {case a ~ b ~ c ~ d => (a:+b):::(c::d)}
+    def six: Parser[List[Operation]] = (bfStatement).+ ~ crossover ~ (wsStatement).+ ~ crossover                ^^ {case a ~ b ~ c ~ d => (a:+b):::(c:+d)}
+    def seven: Parser[List[Operation]] = (bfStatement).+ ~ crossover ~ (wsStatement).+ ~ crossover ~ prog       ^^ {case a ~ b ~ c ~ d ~ e => (a:+b):::(c:+d):::e}
+
+    def eight: Parser[List[Operation]] = crossover                                                              ^^ {case a => List(a)}
+    def nine: Parser[List[Operation]] = crossover ~ crossover                                                   ^^ {case a ~ b => List(a, b)}
+    def ten: Parser[List[Operation]] = crossover ~ crossover ~ prog                                             ^^ {case a ~ b ~ c => a::(b::c)}
+    def eleven: Parser[List[Operation]] = crossover ~ (wsStatement).+                                           ^^ {case a ~ b => a::b}
+    def twelve: Parser[List[Operation]] = crossover ~ (wsStatement).+ ~ crossover                               ^^ {case a ~ b ~ c => (a::b):+c}
+    def thirteen: Parser[List[Operation]] = crossover ~ (wsStatement).+ ~ crossover ~ prog                      ^^ {case a ~ b ~ c ~ d => (a::b):::(c::d)}
+
+    def prog: Parser[List[Operation]] = thirteen | seven | five | ten | twelve | six | four | three | eleven | nine | two | eight | one
+
+    def completelyEmpty = "" ^^^ "NoOp"
     
     def stack    : Parser[Operation] = push | duplicate | swap | discard
     def math     : Parser[Operation] = wsadd | wssub | wsmulti | wsdiv | wsmod
