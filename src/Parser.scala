@@ -10,7 +10,8 @@ case class BfSub() extends Operation
 case class BfInc() extends Operation
 case class BfDec() extends Operation
 case class BfOut() extends Operation
-case class BfIn() extends Operation
+case class BfReadChar() extends Operation
+case class BfReadNum() extends Operation
 case class BfForward() extends Operation
 case class BfBack() extends Operation
 case class WsPush(n: Int) extends Operation
@@ -57,7 +58,7 @@ object BFParser extends JavaTokenParsers {
     def parseFile(in: java.io.Reader) = parseAll(prog, in).get
     def parseLine(line: String) = parseAll(prog, line).get
 
-    override val whiteSpace = """([^\s\\/_><+\-.,\[\]]+)+""".r
+    override val whiteSpace = """([^\s\\/_><+\-.,`\[\]]+)+""".r
 
     def giveaway: Parser[Operation] = "\\"  ^^^ Giveaway()
     def takeaway: Parser[Operation] = "/"   ^^^ Takeaway()
@@ -68,10 +69,11 @@ object BFParser extends JavaTokenParsers {
     def incrementPtr: Parser[Operation] = ">"  ^^^ BfInc()
     def decrementPtr: Parser[Operation] = "<"  ^^^ BfDec()
     def output: Parser[Operation] = "."        ^^^ BfOut()
-    def input: Parser[Operation] = ","         ^^^ BfIn()
+    def inputchar: Parser[Operation] = ","     ^^^ BfReadChar()
+    def inputnum: Parser[Operation] = "`"      ^^^ BfReadNum()
     def forward: Parser[Operation] = "["       ^^^ BfForward()
     def back: Parser[Operation] = "]"          ^^^ BfBack()
-    def bfStatement: Parser[Operation] = incrementByte | decrementByte | incrementPtr | decrementPtr | output | input | forward | back | giveaway | takeaway | bfnop
+    def bfStatement: Parser[Operation] = incrementByte | decrementByte | incrementPtr | decrementPtr | output | inputchar | inputnum | forward | back | giveaway | takeaway | bfnop
     
     def bfnop: Parser[Operation] = ("\t" | " " | "\n") ^^^ BfNoOp()
 
