@@ -97,7 +97,7 @@ object BFParser extends JavaTokenParsers {
 
     def prog: Parser[List[Operation]] = thirteen | seven | five | ten | twelve | six | four | three | eleven | nine | two | eight | one
 
-    def completelyEmpty = "" ^^^ "NoOp"
+    def empty = "" ^^^ BfNoOp()
     
     def stack    : Parser[Operation] = push | duplicate | swap | discard
     def math     : Parser[Operation] = wsadd | wssub | wsmulti | wsdiv | wsmod
