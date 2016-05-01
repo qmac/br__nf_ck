@@ -97,7 +97,8 @@ object BFEvaluator {
             case BfAdd() => incrementVal
             case BfSub() => decrementVal
             case BfOut() => outcell
-            case BfIn() => incell
+            case BfReadChar() => tape(ptr) = readChar
+            case BfReadNum() => tape(ptr) = readInt
             case BfForward() => fward
             case BfBack() => bward
         }
@@ -198,7 +199,7 @@ object BFEvaluator {
     }
     
     def outcell = print(tape(ptr).toChar)
-    def incell =  tape(ptr) = readInt
+
     def fward = {
         if (tape(ptr) == 0)
             pc = brackmap.getOrElse(pc,0)
