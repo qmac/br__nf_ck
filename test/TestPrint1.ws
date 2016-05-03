@@ -9,6 +9,10 @@ S S T	L
 S S T	L
 S S T	L
 S S T	L
+S S S S S T	S T	S T	T	T	L
+T	L
+S S S S S T	S T	S S T	T	L
+T	L
 S S T	L
 S S S S S T	S T	S L
 T	L
