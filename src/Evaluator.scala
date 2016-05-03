@@ -171,18 +171,16 @@ object BFEvaluator {
     }
 
     //Transition instructions
-    
+
     def give = {
         if (bfmode)
             push(tape(ptr))
         else
         {
             if (stack.isEmpty)
-            {
-                System.out.println("Runtime error: Trying to Pop an empty stack")
-                System.exit(0)
-            }
-            tape(ptr) = stack.pop
+                tape(ptr) = 0
+            else
+                tape(ptr) = stack.pop
         }
     }
     
@@ -190,11 +188,9 @@ object BFEvaluator {
         if(bfmode)
         {
             if (stack.isEmpty)
-            {
-                System.out.println("Runtime error: Trying to Pop an empty stack")
-                System.exit(0)
-            }
-            tape(ptr) = stack.pop
+                tape(ptr) = 0
+            else
+                tape(ptr) = stack.pop
         }
         else
             push(tape(ptr))
