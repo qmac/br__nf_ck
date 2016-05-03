@@ -10,19 +10,19 @@ PL assignment 5
   
   BR__NF_CK: a crossover language between the brainfuck and whitespace programming languages
   
-  For every program there exist two memory representations.
-  There is a stack that the programmer can use whitespace language to operate on.
-  There is also an array of cells that the programmer can use brainfuck language to operate on.
+  For every program there exist two memory representations.  
+  There is a stack that the programmer can use whitespace language to operate on.  
+  There is also an array of cells that the programmer can use brainfuck language to operate on.  
   These two features exist separately and independently.
   
   These structures and the syntax for these languages are not modified.
   
-  Brainfuck: 10 commands: > < + - . ! , ` [ ]
-  Whitespace: 5 Command Types: Stack Manipulation, Arithmetic, Heap Access, Flow Control, and I/O
+  Brainfuck: 10 commands: > < + - . ! , ` [ ]  
+  Whitespace: 5 Command Types: Stack Manipulation, Arithmetic, Heap Access, Flow Control, and I/O  
   These commands and their parameters consist of whitespace characters: Space, Tab, and LineFeed.
   
   
-  Visit http://compsoc.dur.ac.uk/whitespace/tutorial.html for a Whitespace tutorial.
+  Visit http://compsoc.dur.ac.uk/whitespace/tutorial.html for a Whitespace tutorial.  
   Visit https://learnxinyminutes.com/docs/brainfuck/ for a Brainfuck tutorial. See bottom of this file to see our modifcations to Brainfuck.
   
   BR__NF_CK introduces three new commands that offer an ability to crossover between the two languages.
