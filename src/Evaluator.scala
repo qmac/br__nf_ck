@@ -202,7 +202,7 @@ object BFEvaluator {
 
     //BF instructions
 
-    def incrementPtr() = {
+    def incrementPtr = {
         if (ptr != tapesize - 1) {
             ptr = ptr + 1
         }
@@ -211,18 +211,18 @@ object BFEvaluator {
         }
     }
     
-    def decrementPtr() = {
+    def decrementPtr = {
         if (ptr != 0)
             ptr = ptr - 1
         else
-            ptr = tapesize
+            ptr = tapesize - 1
     }
     
-    def incrementVal() = {
+    def incrementVal = {
         tape(ptr) = tape(ptr) + 1
     }
     
-    def decrementVal()= {
+    def decrementVal = {
         tape(ptr) = tape(ptr) - 1
     }
     
