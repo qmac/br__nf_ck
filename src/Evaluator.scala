@@ -96,9 +96,10 @@ object BFEvaluator {
             case BfDec() => decrementPtr
             case BfAdd() => incrementVal
             case BfSub() => decrementVal
-            case BfOut() => outcell
             case BfReadChar() => tape(ptr) = readChar
             case BfReadNum() => tape(ptr) = readInt
+            case BfOutChar() => print(tape(ptr).toChar)
+            case BfOutNum() => print(tape(ptr))
             case BfForward() => fward
             case BfBack() => bward
         }
@@ -160,12 +161,26 @@ object BFEvaluator {
         if (bfmode)
             push(tape(ptr))
         else
+        {
+            if (stack.isEmpty)
+            {
+                System.out.println("Runtime error: Trying to Pop an empty stack")
+                System.exit(0)
+            }
             tape(ptr) = stack.pop
+        }
     }
     
     def take = {
         if(bfmode)
+        {
+            if (stack.isEmpty)
+            {
+                System.out.println("Runtime error: Trying to Pop an empty stack")
+                System.exit(0)
+            }
             tape(ptr) = stack.pop
+        }
         else
             push(tape(ptr))
     }
@@ -198,8 +213,6 @@ object BFEvaluator {
         tape(ptr) = tape(ptr) - 1
     }
     
-    def outcell = print(tape(ptr).toChar)
-
     def fward = {
         if (tape(ptr) == 0)
             pc = brackmap.getOrElse(pc,0)

@@ -17,7 +17,7 @@ PL assignment 5
   
   These structures and the syntax for these languages are not modified.
   
-  Brainfuck: 9 commands: > < + - . , ` [ ]
+  Brainfuck: 10 commands: > < + - . ! , ` [ ]
   Whitespace: 5 Command Types: Stack Manipulation, Arithmetic, Heap Access, Flow Control, and I/O
   These commands and their parameters consist of whitespace characters: Space, Tab, and LineFeed.
   
@@ -49,4 +49,4 @@ The steal command is done by using the backslash character: \
 The giveaway command is done by using the forward slash character: /
 
 Brainfuck modification:
-    There is a slight alteration to the brainfuck language: , is used for single char input and ` is used for single int input. In traditional brainfuck implementations the each cell is the size of a byte. In our implementation, each cell is the size of an int to ensure safe transactions between brainfuck and whitespace data representations. Also, the whitespace language has two input methods read char and read int and the brainfuck language is edited to be consistent.
+    There is a slight alteration to the brainfuck language: , is used for single char input and ` is used for single int input. In traditional brainfuck implementations the each cell is the size of a byte. In our implementation, each cell is the size of an int to ensure safe transactions between brainfuck and whitespace data representations. Also, the whitespace language has two input methods read char and read int and the brainfuck language is edited to be consistent. There is an similair alteration for output. '.' is used to output a char, and ! is used to output an int.
