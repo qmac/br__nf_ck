@@ -105,6 +105,7 @@ object BFEvaluator {
         }
     }
 
+    //WS Stack instructions
     def push(n: Int) = stack.push(n)
     def duplicate = stack.push(stack.top)
     def swap = {
@@ -114,6 +115,8 @@ object BFEvaluator {
         stack.push(prevNext)
     }
     def discard = stack.pop
+
+    //WS Arithmetic instructions
     def add = stack.push(stack.pop+stack.pop)
     def subtract = {
         val prevTop = stack.pop
@@ -128,10 +131,14 @@ object BFEvaluator {
         val prevTop = stack.pop
         stack.push(stack.pop%prevTop)
     }
+
+    //WS I/O instructions
     def outchr =  print(stack.pop.toChar)
     def outnum =  print(stack.pop)
     def readchr = heap = heap + (stack.pop -> readChar)
     def readnum = heap = heap + {stack.pop -> readInt}
+
+    //WS Flow Control instructions
     def jump(n: String) = {
         pc = jumpTable.getOrElse(n, -1)
     }
@@ -148,6 +155,12 @@ object BFEvaluator {
     def endSubrt = {
         pc = callStack.pop
     }
+    def end = {
+        stack.clear
+        pc = -2
+    }
+
+    //WS Heap instructions
     def heapStore = {
         val data = stack.pop
         heap = heap + {stack.pop -> data}
@@ -157,6 +170,8 @@ object BFEvaluator {
         stack.push(heap.getOrElse(address, -1))
     }
 
+    //Transition instructions
+    
     def give = {
         if (bfmode)
             push(tape(ptr))
@@ -188,6 +203,8 @@ object BFEvaluator {
     def cross = {
         bfmode = !bfmode
     }
+
+    //BF instructions
 
     def incrementPtr() = {
         if (ptr != tapesize - 1) {
@@ -221,10 +238,5 @@ object BFEvaluator {
     def bward = {
         if (tape(ptr) != 0)
             pc = brackmap.getOrElse(pc,0)
-    }
-    
-    def end = {
-        stack.clear
-        pc = -2
     }
 }
