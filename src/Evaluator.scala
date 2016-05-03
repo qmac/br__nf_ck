@@ -1,5 +1,6 @@
 import scala.collection.mutable.Stack
 import scala.io.StdIn.{readInt,readChar}
+import scala.io.Source.fromFile
 
 object BFEvaluator {
     // Top level data
@@ -10,6 +11,9 @@ object BFEvaluator {
     var brackets = Stack[Int]()
     var pairs = List[(Int, Int)]()
     var brackmap = Map[Int,Int]()
+
+    val inFile = "Input.txt"
+    var bfIn = fromFile(inFile).mkString
 
     val tapesize = 10000
     var tape: Array[Int] = new Array[Int](tapesize)
@@ -96,7 +100,7 @@ object BFEvaluator {
             case BfDec() => decrementPtr
             case BfAdd() => incrementVal
             case BfSub() => decrementVal
-            case BfReadChar() => tape(ptr) = readChar
+            case BfReadChar() => bfRead //tape(ptr) = readChar
             case BfReadNum() => tape(ptr) = readInt
             case BfOutChar() => print(tape(ptr).toChar)
             case BfOutNum() => print(tape(ptr))
@@ -206,9 +210,8 @@ object BFEvaluator {
         if (ptr != tapesize - 1) {
             ptr = ptr + 1
         }
-        else {
+        else
             ptr = 0
-        }
     }
     
     def decrementPtr = {
@@ -226,6 +229,15 @@ object BFEvaluator {
         tape(ptr) = tape(ptr) - 1
     }
     
+    def bfRead = {
+        if (bfIn.length != 0) {
+            tape(ptr) = bfIn.charAt(0)
+            bfIn = bfIn.substring(1)
+        }
+        else
+            tape(ptr) = 0
+    }
+
     def fward = {
         if (tape(ptr) == 0)
             pc = brackmap.getOrElse(pc,0)
