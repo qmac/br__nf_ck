@@ -25,15 +25,22 @@
 //  
 //
 
-public class TestMix
+#include <stdio.h>
+int main()
 {
-  public static void main(String[] args)
-  {
-    //+++++[>++++++<-]>+++[>+++>+++>+++>+++>+++>+++>+++>+++>+++<<<<<<<<<-]>-<+++[>>+++++<<-]>>>-->++++++>+++++++++++>+++>++++++++++++++++++>>++++++++<<<<<<<<<>.>.>
-    String change_mode;   	 					
-change_mode = change_mode;   	 					
-change_mode = "";//.>/.>.>.>
-change_mode = change_mode;   	 					
-change_mode = "";//.>.>.
-  }
+ //+++++[>++++++<-]>+++[>+++>+++>+++>+++>+++>+++>+++>+++>+++<<<<<<<<<-]>-<+++[>>+++++<<-]>>>-->++++++>+++++++++++>+++>++++++++++++++++++>>++++++++>++++++++++<<<<<<<<<<>.>.>
+ int change_mode;   	 					
+ 
+ change_mode = change_mode;   	 					
+ 
+ change_mode = change_mode;   	 					
+ 
+ change_mode = 1;//.>/.>.>.>
+ 
+ int changemode = change_mode;   	 					
+ 
+ change_mode = change_mode;   	 					
+ 
+ change_mode = 2;//.>.>.>.>>
+ printf("C\n");
 }
