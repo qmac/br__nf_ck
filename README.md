@@ -23,7 +23,7 @@ PL assignment 5
   
   
   Visit http://compsoc.dur.ac.uk/whitespace/tutorial.html for a Whitespace tutorial.  
-  Visit https://learnxinyminutes.com/docs/brainfuck/ for a Brainfuck tutorial. See bottom of this file to see our modifcations to Brainfuck.
+  Visit https://learnxinyminutes.com/docs/brainfuck/ for a Brainfuck tutorial. See bottom of this file to see our modifications to Brainfuck.
   
   BR__NF_CK introduces three new commands that offer an ability to crossover between the two languages.
   
@@ -49,4 +49,5 @@ The steal command is done by using the backslash character: \
 The giveaway command is done by using the forward slash character: /
 
 Brainfuck modification:
-    There is a slight alteration to the brainfuck language: , is used for single char input and ` is used for single int input. In traditional brainfuck implementations the each cell is the size of a byte. In our implementation, each cell is the size of an int to ensure safe transactions between brainfuck and whitespace data representations. Also, the whitespace language has two input methods read char and read int and the brainfuck language is edited to be consistent. There is a similar alteration for output. '.' is used to output a char, and ! is used to output an int.
+    There is a slight alteration to the brainfuck language: , is used for single char input and ` is used for single int input. In traditional brainfuck implementations the each cell is the size of a byte. In our implementation, each cell is the size of an int to ensure safe transactions between brainfuck and whitespace data representations. Also, the whitespace language has two input methods read char and read int and the brainfuck language is edited to be consistent. There is a similar alteration for output. '.' is used to output a char, and ! is used to output an int.  
+    Single char input is sometimes used by programs to receive a zero-terminated string of variable length from a user. It is difficult to properly prompt the user for input in these situations by reading in one character at a time, not only because this makes the process of writing in a long string tedious, but also because the user does not have an easy way to type a null character to terminate the input. One may attempt to terminate the input with a newline character instead, but this is not a complete solution because some programs accept the newline character as input. Currently, br__nf_ck reads character input in brainfuck mode from an Input.txt file that can be modified by the user. One possible problem may arise if a program attempts to ask the user for multiple strings of input. Then the same problem of providing a null character is encountered. One possible solution to this that could be implemented in the future is for br__nf_ck to interpret escape sequences in the input.
